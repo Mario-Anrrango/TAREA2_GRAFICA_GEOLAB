@@ -42,6 +42,7 @@
             this.etiquetaSalto = new System.Windows.Forms.Label();
             this.panelVectores = new global::GeoLab2D.Controles.PanelVectores();
             this.panelAnalisis = new global::GeoLab2D.Controles.PanelAnalisis();
+            this.panelTransformaciones = new global::GeoLab2D.Controles.PanelTransformaciones();
             ((System.ComponentModel.ISupportInitialize)(this.puntas)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.salto)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lado)).BeginInit();
@@ -115,6 +116,9 @@
             this.panelAnalisis.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelAnalisis.Visible = false;
             this.panelAnalisis.DatosCambiados += new System.EventHandler(this.parametrosAnalisis_Cambiados);
+            this.panelTransformaciones.Name = "panelTransformaciones";
+            this.panelTransformaciones.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTransformaciones.TransformacionCambiada += new System.EventHandler(this.parametrosTransformacion_Cambiados);
             // 
             // contenedorLienzo
             // 
@@ -157,6 +161,7 @@
             this.Controls.Add(this.estado);
             this.Controls.Add(this.panelVectores);
             this.Controls.Add(this.panelAnalisis);
+            this.Controls.Add(this.panelTransformaciones);
             this.Controls.Add(this.parametros);
             this.Controls.Add(this.encabezado);
             this.MinimumSize = new System.Drawing.Size(520, 420);
@@ -189,5 +194,6 @@
         private System.Windows.Forms.Label etiquetaSalto;
         private Controles.PanelVectores panelVectores;
         private Controles.PanelAnalisis panelAnalisis;
+        private Controles.PanelTransformaciones panelTransformaciones;
     }
 }

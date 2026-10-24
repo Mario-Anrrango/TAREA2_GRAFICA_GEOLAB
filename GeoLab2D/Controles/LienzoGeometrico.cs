@@ -17,6 +17,20 @@ namespace GeoLab2D.Controles
         private Vector2D vectorA, vectorB;
         private PointF[][] contornosAnalisis;
         private PointF analisisA, analisisB, analisisP, analisisQ;
+        private Matriz3x3 transformacion = Matriz3x3.Identidad();
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Matriz3x3 Transformacion
+        {
+            get { return transformacion; }
+            set
+            {
+                if (value == null) throw new System.ArgumentNullException("value");
+                transformacion = value;
+                Invalidate();
+            }
+        }
         private static readonly Color[] Colores =
         {
             Color.Coral, Color.Gold, Color.MediumSeaGreen,
@@ -121,7 +135,7 @@ namespace GeoLab2D.Controles
                     using (var pluma = new Pen(Color.BlueViolet, 2f))
                     {
                         foreach (PointF[] recorrido in estrella.ObtenerRecorridos())
-                            e.Graphics.DrawPolygon(pluma, ConvertirAPantalla(recorrido, centro));
+                            e.Graphics.DrawPolygon(pluma, ConvertirFiguraAPantalla(recorrido, centro));
                     }
                     return;
                 }
@@ -132,25 +146,26 @@ namespace GeoLab2D.Controles
                     {
                         foreach (PointF[] petalo in flor.ObtenerPetalos())
                         {
-                            PointF[] puntos = ConvertirAPantalla(petalo, centro);
+                            PointF[] puntos = ConvertirFiguraAPantalla(petalo, centro);
                             e.Graphics.FillPolygon(pincel, puntos);
                             e.Graphics.DrawPolygon(pluma, puntos);
                         }
                     }
                     return;
                 }
-                PointF[] vertices = ConvertirAPantalla(hexagono.ObtenerVertices(), centro);
+                PointF[] vertices = ConvertirFiguraAPantalla(hexagono.ObtenerVertices(), centro);
+                PointF centroHexagono = ConvertirFiguraAPantalla(new[] { PointF.Empty }, centro)[0];
 
                 using (var contorno = new Pen(Color.FromArgb(45, 45, 45), 1.5f))
                 {
                     for (int i = 0; i < vertices.Length; i++)
                     {
-                        PointF[] triangulo = { centro, vertices[i], vertices[(i + 1) % vertices.Length] };
+                        PointF[] triangulo = { centroHexagono, vertices[i], vertices[(i + 1) % vertices.Length] };
                         using (var pincel = new SolidBrush(Colores[i]))
                             e.Graphics.FillPolygon(pincel, triangulo);
                     }
                     for (int i = 0; i < vertices.Length; i++)
-                        e.Graphics.DrawLine(contorno, centro, vertices[i]);
+                        e.Graphics.DrawLine(contorno, centroHexagono, vertices[i]);
                     e.Graphics.DrawPolygon(contorno, vertices);
                 }
             }
@@ -167,6 +182,11 @@ namespace GeoLab2D.Controles
             for (int i = 0; i < vertices.Length; i++)
                 puntos[i] = new PointF(centro.X + vertices[i].X, centro.Y - vertices[i].Y);
             return puntos;
+        }
+
+        private PointF[] ConvertirFiguraAPantalla(PointF[] vertices, PointF centro)
+        {
+            return ConvertirAPantalla(transformacion.Transformar(vertices), centro);
         }
 
         private void DibujarAnalisis(Graphics graphics, PointF centro)

@@ -61,6 +61,10 @@
     <Compile Include="Geometria\PoligonoEstrellado.cs" />
     <Compile Include="Geometria\Vector2D.cs" />
     <Compile Include="Geometria\GeometriaPlana.cs" />
+    <Compile Include="Geometria\Matriz3x3.cs" />
+    <Compile Include="Controles\PanelTransformaciones.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controles\PanelAnalisis.cs">
       <SubType>UserControl</SubType>
     </Compile>

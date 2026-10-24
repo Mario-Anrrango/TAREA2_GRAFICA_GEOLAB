@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Drawing;
 using GeoLab2D.Geometria;
 
 namespace GeoLab2D
@@ -37,6 +38,32 @@ namespace GeoLab2D
             if (selectorFigura.SelectedIndex == 4) ActualizarFigura();
         }
 
+        private void parametrosTransformacion_Cambiados(object sender, EventArgs e)
+        {
+            if (selectorFigura.SelectedIndex != 3) ActualizarFigura();
+        }
+
+        private PointF[][] ObtenerContornos(int tipo)
+        {
+            if (tipo == 0) return new[] { new HexagonoRegular((float)lado.Value).ObtenerVertices() };
+            if (tipo == 1) return new FlorMargarita((float)lado.Value).ObtenerPetalos();
+            return new PoligonoEstrellado((int)puntas.Value, (int)salto.Value, (float)lado.Value).ObtenerRecorridos();
+        }
+
+        private static double AreaContornos(PointF[][] contornos)
+        {
+            double area = 0;
+            foreach (PointF[] contorno in contornos) area += GeometriaPlana.AreaFirmada(contorno);
+            return Math.Abs(area);
+        }
+
+        private static double LongitudContornos(PointF[][] contornos)
+        {
+            double longitud = 0;
+            foreach (PointF[] contorno in contornos) longitud += GeometriaPlana.Perimetro(contorno);
+            return longitud;
+        }
+
         private void ActualizarFigura()
         {
             if (selectorFigura.SelectedIndex < 0) return;
@@ -45,6 +72,7 @@ namespace GeoLab2D
             bool esVectores = selectorFigura.SelectedIndex == 3;
             panelVectores.Visible = esVectores;
             panelAnalisis.Visible = esAnalisis;
+            panelTransformaciones.Visible = !esVectores;
             lado.Enabled = !esVectores;
             etiquetaLado.Enabled = !esVectores;
             puntas.Enabled = esEstrella;
@@ -56,23 +84,37 @@ namespace GeoLab2D
                 int maximo = ((int)puntas.Value - 1) / 2;
                 if (salto.Maximum != maximo) salto.Maximum = maximo;
             }
+            Matriz3x3 matriz = panelTransformaciones.Matriz;
+            lienzo.Transformacion = matriz;
+            PointF[][] contornosActuales = null;
+            if (!esVectores)
+            {
+                int tipo = esAnalisis ? panelAnalisis.Figura : selectorFigura.SelectedIndex;
+                contornosActuales = matriz.Transformar(ObtenerContornos(tipo));
+                bool fuera = false;
+                foreach (PointF[] contorno in contornosActuales)
+                foreach (PointF punto in contorno)
+                    if (Math.Abs(punto.X) > lienzo.ClientSize.Width / 2f - 2 ||
+                        Math.Abs(punto.Y) > lienzo.ClientSize.Height / 2f - 2) fuera = true;
+                panelTransformaciones.MostrarLimites(fuera);
+            }
             if (esAnalisis)
             {
                 System.Drawing.PointF[][] contornos;
                 if (panelAnalisis.Figura == 0)
                 {
                     etiquetaLado.Text = "Lado del hexágono (px):";
-                    contornos = new[] { new HexagonoRegular((float)lado.Value).ObtenerVertices() };
+                    contornos = contornosActuales;
                 }
                 else if (panelAnalisis.Figura == 1)
                 {
                     etiquetaLado.Text = "Lado exterior (px):";
-                    contornos = new FlorMargarita((float)lado.Value).ObtenerPetalos();
+                    contornos = contornosActuales;
                 }
                 else
                 {
                     etiquetaLado.Text = "Radio exterior (px):";
-                    contornos = new PoligonoEstrellado((int)puntas.Value, (int)salto.Value, (float)lado.Value).ObtenerRecorridos();
+                    contornos = contornosActuales;
                 }
                 panelAnalisis.MostrarResultados(contornos, esEstrella);
                 lienzo.MostrarAnalisis(contornos, panelAnalisis.A, panelAnalisis.B, panelAnalisis.P);
@@ -86,8 +128,8 @@ namespace GeoLab2D
                 var figura = new HexagonoRegular((float)lado.Value);
                 lienzo.Hexagono = figura;
                 estado.Text = string.Format(
-                    "Lado: {0:0.0} px | Perímetro: {1:0.00} px | Área: {2:0.00} px²\r\nLienzo mínimo: 800 × 600 | Hexágono de seis colores",
-                    figura.Lado, figura.Perimetro, figura.Area);
+                    "Lado base: {0:0.0} px | Perímetro actual: {1:0.00} px | Área actual: {2:0.00} px²\r\nLienzo mínimo: 800 × 600 | Hexágono de seis colores",
+                    figura.Lado, LongitudContornos(contornosActuales), AreaContornos(contornosActuales));
             }
             else if (selectorFigura.SelectedIndex == 1)
             {
@@ -95,8 +137,8 @@ namespace GeoLab2D
                 var figura = new FlorMargarita((float)lado.Value);
                 lienzo.Flor = figura;
                 estado.Text = string.Format(
-                    "Exterior: {0:0.0} px | Lado de pétalo: {1:0.00} px | Área roja: {2:0.00} px²\r\nMargarita: cinco pentágonos regulares | Centro sin relleno",
-                    figura.LadoExterior, figura.LadoPetalo, figura.AreaTotal);
+                    "Exterior base: {0:0.0} px | Pétalo base: {1:0.00} px | Área roja actual: {2:0.00} px²\r\nMargarita: cinco pentágonos regulares de base | Centro sin relleno",
+                    figura.LadoExterior, figura.LadoPetalo, AreaContornos(contornosActuales));
             }
             else if (esEstrella)
             {
@@ -107,8 +149,8 @@ namespace GeoLab2D
                 var figura = new PoligonoEstrellado((int)puntas.Value, (int)salto.Value, (float)lado.Value);
                 lienzo.Estrella = figura;
                 estado.Text = string.Format(
-                    "{0} puntas | Salto: {1} | Trazos cerrados: {2} | Longitud total: {3:0.00} px\r\nRadio exterior: {4:0.0} px | Polígono estrellado sin relleno",
-                    figura.Puntas, figura.Salto, figura.Componentes, figura.LongitudTotal, figura.RadioExterior);
+                    "{0} puntas | Salto: {1} | Trazos cerrados: {2} | Longitud actual: {3:0.00} px\r\nRadio base: {4:0.0} px | Polígono estrellado sin relleno",
+                    figura.Puntas, figura.Salto, figura.Componentes, LongitudContornos(contornosActuales), figura.RadioExterior);
             }
             else
             {

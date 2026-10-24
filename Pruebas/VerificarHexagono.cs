@@ -89,6 +89,7 @@ internal static class VerificarHexagono
             VerificarEstrella.Ejecutar();
             VerificarVectores.Ejecutar();
             VerificarGeometria.Ejecutar();
+            VerificarMatrices.Ejecutar();
             return 0;
         }
         catch (Exception error)
