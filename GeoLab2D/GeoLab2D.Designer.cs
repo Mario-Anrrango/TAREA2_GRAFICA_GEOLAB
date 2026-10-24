@@ -41,6 +41,7 @@
             this.etiquetaPuntas = new System.Windows.Forms.Label();
             this.etiquetaSalto = new System.Windows.Forms.Label();
             this.panelVectores = new global::GeoLab2D.Controles.PanelVectores();
+            this.panelAnalisis = new global::GeoLab2D.Controles.PanelAnalisis();
             ((System.ComponentModel.ISupportInitialize)(this.puntas)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.salto)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lado)).BeginInit();
@@ -75,7 +76,7 @@
             this.selectorFigura.Name = "selectorFigura";
             this.selectorFigura.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.selectorFigura.Width = 220;
-            this.selectorFigura.Items.AddRange(new object[] { "Hexágono de seis colores", "Flor de margarita", "Polígono estrellado", "Operaciones vectoriales" });
+            this.selectorFigura.Items.AddRange(new object[] { "Hexágono de seis colores", "Flor de margarita", "Polígono estrellado", "Operaciones vectoriales", "Análisis geométrico" });
             this.selectorFigura.SelectedIndexChanged += new System.EventHandler(this.selectorFigura_SelectedIndexChanged);
             this.etiquetaLado.AutoSize = true;
             this.etiquetaLado.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
@@ -110,6 +111,10 @@
             this.panelVectores.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelVectores.Visible = false;
             this.panelVectores.VectoresCambiados += new System.EventHandler(this.parametrosVectores_Cambiados);
+            this.panelAnalisis.Name = "panelAnalisis";
+            this.panelAnalisis.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelAnalisis.Visible = false;
+            this.panelAnalisis.DatosCambiados += new System.EventHandler(this.parametrosAnalisis_Cambiados);
             // 
             // contenedorLienzo
             // 
@@ -151,6 +156,7 @@
             this.Controls.Add(this.contenedorLienzo);
             this.Controls.Add(this.estado);
             this.Controls.Add(this.panelVectores);
+            this.Controls.Add(this.panelAnalisis);
             this.Controls.Add(this.parametros);
             this.Controls.Add(this.encabezado);
             this.MinimumSize = new System.Drawing.Size(520, 420);
@@ -182,5 +188,6 @@
         private System.Windows.Forms.Label etiquetaPuntas;
         private System.Windows.Forms.Label etiquetaSalto;
         private Controles.PanelVectores panelVectores;
+        private Controles.PanelAnalisis panelAnalisis;
     }
 }

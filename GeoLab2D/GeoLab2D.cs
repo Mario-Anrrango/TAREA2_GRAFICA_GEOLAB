@@ -32,19 +32,55 @@ namespace GeoLab2D
             if (selectorFigura.SelectedIndex == 3) ActualizarFigura();
         }
 
+        private void parametrosAnalisis_Cambiados(object sender, EventArgs e)
+        {
+            if (selectorFigura.SelectedIndex == 4) ActualizarFigura();
+        }
+
         private void ActualizarFigura()
         {
             if (selectorFigura.SelectedIndex < 0) return;
-            bool esEstrella = selectorFigura.SelectedIndex == 2;
+            bool esAnalisis = selectorFigura.SelectedIndex == 4;
+            bool esEstrella = selectorFigura.SelectedIndex == 2 || (esAnalisis && panelAnalisis.Figura == 2);
             bool esVectores = selectorFigura.SelectedIndex == 3;
             panelVectores.Visible = esVectores;
+            panelAnalisis.Visible = esAnalisis;
             lado.Enabled = !esVectores;
             etiquetaLado.Enabled = !esVectores;
             puntas.Enabled = esEstrella;
             salto.Enabled = esEstrella;
             etiquetaPuntas.Enabled = esEstrella;
             etiquetaSalto.Enabled = esEstrella;
-            if (selectorFigura.SelectedIndex == 0)
+            if (esEstrella)
+            {
+                int maximo = ((int)puntas.Value - 1) / 2;
+                if (salto.Maximum != maximo) salto.Maximum = maximo;
+            }
+            if (esAnalisis)
+            {
+                System.Drawing.PointF[][] contornos;
+                if (panelAnalisis.Figura == 0)
+                {
+                    etiquetaLado.Text = "Lado del hexágono (px):";
+                    contornos = new[] { new HexagonoRegular((float)lado.Value).ObtenerVertices() };
+                }
+                else if (panelAnalisis.Figura == 1)
+                {
+                    etiquetaLado.Text = "Lado exterior (px):";
+                    contornos = new FlorMargarita((float)lado.Value).ObtenerPetalos();
+                }
+                else
+                {
+                    etiquetaLado.Text = "Radio exterior (px):";
+                    contornos = new PoligonoEstrellado((int)puntas.Value, (int)salto.Value, (float)lado.Value).ObtenerRecorridos();
+                }
+                panelAnalisis.MostrarResultados(contornos, esEstrella);
+                lienzo.MostrarAnalisis(contornos, panelAnalisis.A, panelAnalisis.B, panelAnalisis.P);
+                estado.Text = esEstrella
+                    ? "Pertenencia de estrella: regla par-impar | Área algebraica, no área de relleno\r\nEdite A, B y P para comprobar orientación y proyección"
+                    : "Análisis de la figura seleccionada | Borde distinguido del interior\r\nEdite A, B y P para comprobar orientación y proyección";
+            }
+            else if (selectorFigura.SelectedIndex == 0)
             {
                 etiquetaLado.Text = "Lado del hexágono (px):";
                 var figura = new HexagonoRegular((float)lado.Value);

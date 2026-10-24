@@ -60,6 +60,10 @@
     <Compile Include="Geometria\FlorMargarita.cs" />
     <Compile Include="Geometria\PoligonoEstrellado.cs" />
     <Compile Include="Geometria\Vector2D.cs" />
+    <Compile Include="Geometria\GeometriaPlana.cs" />
+    <Compile Include="Controles\PanelAnalisis.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controles\PanelVectores.cs">
       <SubType>UserControl</SubType>
     </Compile>
