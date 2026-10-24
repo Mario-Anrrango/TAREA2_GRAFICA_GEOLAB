@@ -14,6 +14,7 @@
     <Reference Include="System.Windows.Forms" />
     <Compile Include="VerificarHexagono.cs" />
     <Compile Include="VerificarMargarita.cs" />
+    <Compile Include="VerificarEstrella.cs" />
     <ProjectReference Include="..\GeoLab2D\GeoLab2D.csproj">
       <Project>{6CDF8E15-C6CF-4691-8AFD-486DB47A3266}</Project>
       <Name>GeoLab2D</Name>

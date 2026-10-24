@@ -58,6 +58,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Geometria\HexagonoRegular.cs" />
     <Compile Include="Geometria\FlorMargarita.cs" />
+    <Compile Include="Geometria\PoligonoEstrellado.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="GeoLab2D.resx">
       <DependentUpon>GeoLab2D.cs</DependentUpon>

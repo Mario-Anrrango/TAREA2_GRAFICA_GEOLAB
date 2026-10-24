@@ -13,6 +13,7 @@ namespace GeoLab2D.Controles
     {
         private HexagonoRegular hexagono;
         private FlorMargarita flor;
+        private PoligonoEstrellado estrella;
         private static readonly Color[] Colores =
         {
             Color.Coral, Color.Gold, Color.MediumSeaGreen,
@@ -24,7 +25,7 @@ namespace GeoLab2D.Controles
         public HexagonoRegular Hexagono
         {
             get { return hexagono; }
-            set { hexagono = value; flor = null; Invalidate(); }
+            set { hexagono = value; flor = null; estrella = null; Invalidate(); }
         }
 
         [Browsable(false)]
@@ -32,7 +33,15 @@ namespace GeoLab2D.Controles
         public FlorMargarita Flor
         {
             get { return flor; }
-            set { flor = value; hexagono = null; Invalidate(); }
+            set { flor = value; hexagono = null; estrella = null; Invalidate(); }
+        }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public PoligonoEstrellado Estrella
+        {
+            get { return estrella; }
+            set { estrella = value; hexagono = null; flor = null; Invalidate(); }
         }
 
         public LienzoGeometrico()
@@ -53,13 +62,22 @@ namespace GeoLab2D.Controles
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            if (hexagono == null && flor == null) return;
+            if (hexagono == null && flor == null && estrella == null) return;
 
             GraphicsState estado = e.Graphics.Save();
             try
             {
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                 PointF centro = new PointF(ClientSize.Width / 2f, ClientSize.Height / 2f);
+                if (estrella != null)
+                {
+                    using (var pluma = new Pen(Color.BlueViolet, 2f))
+                    {
+                        foreach (PointF[] recorrido in estrella.ObtenerRecorridos())
+                            e.Graphics.DrawPolygon(pluma, ConvertirAPantalla(recorrido, centro));
+                    }
+                    return;
+                }
                 if (flor != null)
                 {
                     using (var pincel = new SolidBrush(Color.Red))

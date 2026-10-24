@@ -36,6 +36,12 @@
             this.etiquetaLado = new System.Windows.Forms.Label();
             this.lado = new System.Windows.Forms.NumericUpDown();
             this.selectorFigura = new System.Windows.Forms.ComboBox();
+            this.puntas = new System.Windows.Forms.NumericUpDown();
+            this.salto = new System.Windows.Forms.NumericUpDown();
+            this.etiquetaPuntas = new System.Windows.Forms.Label();
+            this.etiquetaSalto = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.puntas)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.salto)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lado)).BeginInit();
             this.parametros.SuspendLayout();
             this.contenedorLienzo.SuspendLayout();
@@ -61,10 +67,14 @@
             this.parametros.Controls.Add(this.selectorFigura);
             this.parametros.Controls.Add(this.etiquetaLado);
             this.parametros.Controls.Add(this.lado);
+            this.parametros.Controls.Add(this.etiquetaPuntas);
+            this.parametros.Controls.Add(this.puntas);
+            this.parametros.Controls.Add(this.etiquetaSalto);
+            this.parametros.Controls.Add(this.salto);
             this.selectorFigura.Name = "selectorFigura";
             this.selectorFigura.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.selectorFigura.Width = 220;
-            this.selectorFigura.Items.AddRange(new object[] { "Hexágono de seis colores", "Flor de margarita" });
+            this.selectorFigura.Items.AddRange(new object[] { "Hexágono de seis colores", "Flor de margarita", "Polígono estrellado" });
             this.selectorFigura.SelectedIndexChanged += new System.EventHandler(this.selectorFigura_SelectedIndexChanged);
             this.etiquetaLado.AutoSize = true;
             this.etiquetaLado.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
@@ -76,6 +86,25 @@
             this.lado.Value = 150;
             this.lado.Width = 100;
             this.lado.ValueChanged += new System.EventHandler(this.lado_ValueChanged);
+            // Parámetros específicos del polígono estrellado
+            this.etiquetaPuntas.AutoSize = true;
+            this.etiquetaPuntas.Text = "Puntas:";
+            this.etiquetaPuntas.Margin = new System.Windows.Forms.Padding(8, 4, 2, 0);
+            this.etiquetaSalto.AutoSize = true;
+            this.etiquetaSalto.Text = "Salto:";
+            this.etiquetaSalto.Margin = new System.Windows.Forms.Padding(8, 4, 2, 0);
+            this.puntas.Name = "puntas";
+            this.puntas.Minimum = 5;
+            this.puntas.Maximum = 32;
+            this.puntas.Value = 5;
+            this.puntas.Width = 60;
+            this.puntas.ValueChanged += new System.EventHandler(this.parametrosEstrella_ValueChanged);
+            this.salto.Name = "salto";
+            this.salto.Minimum = 2;
+            this.salto.Maximum = 2;
+            this.salto.Value = 2;
+            this.salto.Width = 60;
+            this.salto.ValueChanged += new System.EventHandler(this.parametrosEstrella_ValueChanged);
             // 
             // contenedorLienzo
             // 
@@ -106,7 +135,7 @@
             this.estado.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
             this.estado.Size = new System.Drawing.Size(850, 48);
             this.estado.TabIndex = 1;
-            this.estado.Text = "Etapa 2: hexágono regular de seis colores";
+            this.estado.Text = "GeoLab2D | Construcción de figuras";
             this.estado.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // GeoLab2D
@@ -126,6 +155,8 @@
             this.parametros.ResumeLayout(false);
             this.parametros.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lado)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.puntas)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.salto)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -140,5 +171,9 @@
         private System.Windows.Forms.Label etiquetaLado;
         private System.Windows.Forms.NumericUpDown lado;
         private System.Windows.Forms.ComboBox selectorFigura;
+        private System.Windows.Forms.NumericUpDown puntas;
+        private System.Windows.Forms.NumericUpDown salto;
+        private System.Windows.Forms.Label etiquetaPuntas;
+        private System.Windows.Forms.Label etiquetaSalto;
     }
 }
