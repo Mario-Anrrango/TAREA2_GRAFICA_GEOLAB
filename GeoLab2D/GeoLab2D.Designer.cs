@@ -35,6 +35,7 @@
             this.parametros = new System.Windows.Forms.FlowLayoutPanel();
             this.etiquetaLado = new System.Windows.Forms.Label();
             this.lado = new System.Windows.Forms.NumericUpDown();
+            this.selectorFigura = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.lado)).BeginInit();
             this.parametros.SuspendLayout();
             this.contenedorLienzo.SuspendLayout();
@@ -54,9 +55,17 @@
             // parametros
             this.parametros.Dock = System.Windows.Forms.DockStyle.Top;
             this.parametros.Height = 44;
-            this.parametros.Padding = new System.Windows.Forms.Padding(16, 6, 0, 0);
+            this.parametros.AutoSize = true;
+            this.parametros.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.parametros.Padding = new System.Windows.Forms.Padding(16, 6, 0, 6);
+            this.parametros.Controls.Add(this.selectorFigura);
             this.parametros.Controls.Add(this.etiquetaLado);
             this.parametros.Controls.Add(this.lado);
+            this.selectorFigura.Name = "selectorFigura";
+            this.selectorFigura.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.selectorFigura.Width = 220;
+            this.selectorFigura.Items.AddRange(new object[] { "Hexágono de seis colores", "Flor de margarita" });
+            this.selectorFigura.SelectedIndexChanged += new System.EventHandler(this.selectorFigura_SelectedIndexChanged);
             this.etiquetaLado.AutoSize = true;
             this.etiquetaLado.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
             this.etiquetaLado.Text = "Lado del hexágono (px):";
@@ -130,5 +139,6 @@
         private System.Windows.Forms.FlowLayoutPanel parametros;
         private System.Windows.Forms.Label etiquetaLado;
         private System.Windows.Forms.NumericUpDown lado;
+        private System.Windows.Forms.ComboBox selectorFigura;
     }
 }

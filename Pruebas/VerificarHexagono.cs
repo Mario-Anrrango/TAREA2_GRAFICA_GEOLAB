@@ -85,6 +85,7 @@ internal static class VerificarHexagono
                 if (lienzo.Width < 800 || lienzo.Height < 600) throw new Exception("Lienzo inferior al mínimo.");
             }
             Console.WriteLine("Correcto: entradas inválidas, área conocida, actualización y seis colores.");
+            VerificarMargarita.Ejecutar();
             return 0;
         }
         catch (Exception error)

@@ -12,6 +12,7 @@ namespace GeoLab2D.Controles
     public class LienzoGeometrico : Panel
     {
         private HexagonoRegular hexagono;
+        private FlorMargarita flor;
         private static readonly Color[] Colores =
         {
             Color.Coral, Color.Gold, Color.MediumSeaGreen,
@@ -23,7 +24,15 @@ namespace GeoLab2D.Controles
         public HexagonoRegular Hexagono
         {
             get { return hexagono; }
-            set { hexagono = value; Invalidate(); }
+            set { hexagono = value; flor = null; Invalidate(); }
+        }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public FlorMargarita Flor
+        {
+            get { return flor; }
+            set { flor = value; hexagono = null; Invalidate(); }
         }
 
         public LienzoGeometrico()
@@ -44,19 +53,28 @@ namespace GeoLab2D.Controles
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            if (hexagono == null) return;
+            if (hexagono == null && flor == null) return;
 
             GraphicsState estado = e.Graphics.Save();
             try
             {
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                 PointF centro = new PointF(ClientSize.Width / 2f, ClientSize.Height / 2f);
-                PointF[] vertices = hexagono.ObtenerVertices();
-                for (int i = 0; i < vertices.Length; i++)
+                if (flor != null)
                 {
-                    // Conversión de coordenadas cartesianas a pantalla: Y crece hacia abajo.
-                    vertices[i] = new PointF(centro.X + vertices[i].X, centro.Y - vertices[i].Y);
+                    using (var pincel = new SolidBrush(Color.Red))
+                    using (var pluma = new Pen(Color.DarkRed, 1f))
+                    {
+                        foreach (PointF[] petalo in flor.ObtenerPetalos())
+                        {
+                            PointF[] puntos = ConvertirAPantalla(petalo, centro);
+                            e.Graphics.FillPolygon(pincel, puntos);
+                            e.Graphics.DrawPolygon(pluma, puntos);
+                        }
+                    }
+                    return;
                 }
+                PointF[] vertices = ConvertirAPantalla(hexagono.ObtenerVertices(), centro);
 
                 using (var contorno = new Pen(Color.FromArgb(45, 45, 45), 1.5f))
                 {
@@ -75,6 +93,15 @@ namespace GeoLab2D.Controles
             {
                 e.Graphics.Restore(estado);
             }
+        }
+
+        private static PointF[] ConvertirAPantalla(PointF[] vertices, PointF centro)
+        {
+            // Conversión de coordenadas cartesianas a pantalla: Y crece hacia abajo.
+            var puntos = new PointF[vertices.Length];
+            for (int i = 0; i < vertices.Length; i++)
+                puntos[i] = new PointF(centro.X + vertices[i].X, centro.Y - vertices[i].Y);
+            return puntos;
         }
     }
 }

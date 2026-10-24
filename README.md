@@ -3,7 +3,7 @@
 Aplicación de escritorio para la tarea de Computación Gráfica, desarrollada
 en C# con Windows Forms y .NET Framework 4.7.2.
 
-## Avance actual: etapa 2
+## Avance actual: etapa 3
 
 - Referencias del proyecto y punto de entrada corregidos para el formulario `GeoLab2D`.
 - Lienzo de al menos 800 × 600 píxeles, con doble búfer.
@@ -12,10 +12,13 @@ en C# con Windows Forms y .NET Framework 4.7.2.
 - Hexágono generado con trigonometría y dividido en seis triángulos de colores.
 - Lado configurable de 1 a 280 píxeles, con un decimal; área y perímetro visibles.
 - Modelo matemático independiente de Windows Forms y pruebas reproducibles.
+- Margarita de cinco pentágonos rojos inscritos en un pentágono mayor, con hueco central.
+- Selector de figura; en la margarita el parámetro es el lado del pentágono exterior.
 
 Las fórmulas, responsabilidades y casos de prueba están en
-[la documentación de la etapa 2](docs/Etapa2-Hexagono.md).
-La flor, las estrellas y las operaciones generales siguen pendientes.
+[la documentación del hexágono](docs/Etapa2-Hexagono.md) y
+[la documentación de la margarita](docs/Etapa3-Margarita.md).
+Las estrellas y las operaciones generales siguen pendientes.
 
 ## Ejecutar
 
@@ -36,8 +39,8 @@ Los commits deben reflejar cambios realmente realizados y comprobados.
 | Etapa | Alcance | Mensaje de commit sugerido |
 | --- | --- | --- |
 | 1 (completada) | Corregir inicio y preparar lienzo | `Prepara formulario y lienzo base de GeoLab2D` |
-| 2 (actual) | Hexágono regular, seis triángulos de colores y lado configurable; cálculo separado del dibujo | `Agrega hexágono regular de seis colores` |
-| 3 | Flor simétrica construida con cinco pentágonos regulares | `Agrega flor de margarita con pentagonos` |
+| 2 (completada) | Hexágono regular, seis triángulos de colores y lado configurable; cálculo separado del dibujo | `Agrega hexágono regular de seis colores` |
+| 3 (actual) | Flor simétrica construida con cinco pentágonos regulares | `Agrega flor de margarita con pentagonos` |
 | 4 | Polígono estrellado con número de puntas configurable | `Agrega construccion de poligonos estrellados` |
 | 5 | Magnitud, dirección, producto punto y determinante de vectores | `Implementa operaciones vectoriales` |
 | 6 | Áreas, perímetros, orientación, pertenencia y proyección sobre segmentos | `Agrega analisis geometrico y proyecciones` |
@@ -62,13 +65,16 @@ con resultados conocidos; la etapa 9 consolida esas evidencias.
 `GeoLab2D.cs` coordina los controles; `Controles/LienzoGeometrico.cs` dibuja.
 `Geometria/HexagonoRegular.cs` calcula los vértices `PointF`, el área y el perímetro
 sin depender de controles. Las siguientes etapas ampliarán la geometría y las matrices.
+`Geometria/FlorMargarita.cs` construye los cinco pétalos y calcula sus propiedades.
 
-## Verificar la etapa 2
+## Verificar las etapas 2 y 3
 
 Compilar `Pruebas/GeoLab2D.Pruebas.csproj` y ejecutar
 `Pruebas/bin/Debug/GeoLab2D.Pruebas.exe`. Se comprueban longitudes, área,
 perímetro, entradas inválidas, actualización desde la interfaz y seis colores.
-La revisión manual está descrita en `docs/Etapa2-Hexagono.md`.
+También se verifican la simetría de la flor, la inscripción de los pentágonos,
+sus áreas, los cinco rellenos rojos, el hueco y la selección de figura.
+La revisión manual está descrita en los documentos de cada etapa.
 
 ## Registrar este avance
 
@@ -76,8 +82,8 @@ Después de revisar y compilar, desde la raíz del repositorio:
 
 ```powershell
 git diff
-git add README.md GeoLab2D/GeoLab2D.csproj GeoLab2D/GeoLab2D.cs GeoLab2D/GeoLab2D.Designer.cs GeoLab2D/Controles/LienzoGeometrico.cs GeoLab2D/Geometria/HexagonoRegular.cs Pruebas/GeoLab2D.Pruebas.csproj Pruebas/VerificarHexagono.cs docs/Etapa2-Hexagono.md
-git commit -m "Agrega hexagono regular de seis colores"
+git add README.md GeoLab2D/GeoLab2D.csproj GeoLab2D/GeoLab2D.cs GeoLab2D/GeoLab2D.Designer.cs GeoLab2D/Controles/LienzoGeometrico.cs GeoLab2D/Geometria/FlorMargarita.cs Pruebas/GeoLab2D.Pruebas.csproj Pruebas/VerificarHexagono.cs Pruebas/VerificarMargarita.cs docs/Etapa3-Margarita.md
+git commit -m "Agrega flor de margarita con pentagonos"
 git push
 ```
 
