@@ -95,7 +95,7 @@
             this.etiquetaSalto.Margin = new System.Windows.Forms.Padding(8, 4, 2, 0);
             this.puntas.Name = "puntas";
             this.puntas.Minimum = 5;
-            this.puntas.Maximum = 32;
+            this.puntas.Maximum = 64;
             this.puntas.Value = 5;
             this.puntas.Width = 60;
             this.puntas.ValueChanged += new System.EventHandler(this.parametrosEstrella_ValueChanged);
