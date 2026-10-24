@@ -27,10 +27,19 @@ namespace GeoLab2D
             ActualizarFigura();
         }
 
+        private void parametrosVectores_Cambiados(object sender, EventArgs e)
+        {
+            if (selectorFigura.SelectedIndex == 3) ActualizarFigura();
+        }
+
         private void ActualizarFigura()
         {
             if (selectorFigura.SelectedIndex < 0) return;
             bool esEstrella = selectorFigura.SelectedIndex == 2;
+            bool esVectores = selectorFigura.SelectedIndex == 3;
+            panelVectores.Visible = esVectores;
+            lado.Enabled = !esVectores;
+            etiquetaLado.Enabled = !esVectores;
             puntas.Enabled = esEstrella;
             salto.Enabled = esEstrella;
             etiquetaPuntas.Enabled = esEstrella;
@@ -53,7 +62,7 @@ namespace GeoLab2D
                     "Exterior: {0:0.0} px | Lado de pétalo: {1:0.00} px | Área roja: {2:0.00} px²\r\nMargarita: cinco pentágonos regulares | Centro sin relleno",
                     figura.LadoExterior, figura.LadoPetalo, figura.AreaTotal);
             }
-            else
+            else if (esEstrella)
             {
                 etiquetaLado.Text = "Radio exterior (px):";
                 // Maximum ajusta también Value si el salto anterior ya no es válido.
@@ -64,6 +73,11 @@ namespace GeoLab2D
                 estado.Text = string.Format(
                     "{0} puntas | Salto: {1} | Trazos cerrados: {2} | Longitud total: {3:0.00} px\r\nRadio exterior: {4:0.0} px | Polígono estrellado sin relleno",
                     figura.Puntas, figura.Salto, figura.Componentes, figura.LongitudTotal, figura.RadioExterior);
+            }
+            else
+            {
+                lienzo.MostrarVectores(panelVectores.VectorA, panelVectores.VectorB);
+                estado.Text = "Vectores desde O(0, 0) | Eje X hacia la derecha, Y hacia arriba\r\nEdite A.x, A.y, B.x y B.y para comprobar las operaciones";
             }
         }
 

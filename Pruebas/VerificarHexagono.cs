@@ -87,6 +87,7 @@ internal static class VerificarHexagono
             Console.WriteLine("Correcto: entradas inválidas, área conocida, actualización y seis colores.");
             VerificarMargarita.Ejecutar();
             VerificarEstrella.Ejecutar();
+            VerificarVectores.Ejecutar();
             return 0;
         }
         catch (Exception error)

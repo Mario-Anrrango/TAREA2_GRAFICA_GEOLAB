@@ -59,6 +59,10 @@
     <Compile Include="Geometria\HexagonoRegular.cs" />
     <Compile Include="Geometria\FlorMargarita.cs" />
     <Compile Include="Geometria\PoligonoEstrellado.cs" />
+    <Compile Include="Geometria\Vector2D.cs" />
+    <Compile Include="Controles\PanelVectores.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="GeoLab2D.resx">
       <DependentUpon>GeoLab2D.cs</DependentUpon>

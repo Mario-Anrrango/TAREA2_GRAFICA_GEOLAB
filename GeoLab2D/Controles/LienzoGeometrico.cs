@@ -14,6 +14,7 @@ namespace GeoLab2D.Controles
         private HexagonoRegular hexagono;
         private FlorMargarita flor;
         private PoligonoEstrellado estrella;
+        private Vector2D vectorA, vectorB;
         private static readonly Color[] Colores =
         {
             Color.Coral, Color.Gold, Color.MediumSeaGreen,
@@ -25,7 +26,7 @@ namespace GeoLab2D.Controles
         public HexagonoRegular Hexagono
         {
             get { return hexagono; }
-            set { hexagono = value; flor = null; estrella = null; Invalidate(); }
+            set { hexagono = value; flor = null; estrella = null; vectorA = vectorB = null; Invalidate(); }
         }
 
         [Browsable(false)]
@@ -33,7 +34,7 @@ namespace GeoLab2D.Controles
         public FlorMargarita Flor
         {
             get { return flor; }
-            set { flor = value; hexagono = null; estrella = null; Invalidate(); }
+            set { flor = value; hexagono = null; estrella = null; vectorA = vectorB = null; Invalidate(); }
         }
 
         [Browsable(false)]
@@ -41,7 +42,19 @@ namespace GeoLab2D.Controles
         public PoligonoEstrellado Estrella
         {
             get { return estrella; }
-            set { estrella = value; hexagono = null; flor = null; Invalidate(); }
+            set { estrella = value; hexagono = null; flor = null; vectorA = vectorB = null; Invalidate(); }
+        }
+
+        public void MostrarVectores(Vector2D a, Vector2D b)
+        {
+            if (a == null) throw new System.ArgumentNullException("a");
+            if (b == null) throw new System.ArgumentNullException("b");
+            vectorA = a;
+            vectorB = b;
+            hexagono = null;
+            flor = null;
+            estrella = null;
+            Invalidate();
         }
 
         public LienzoGeometrico()
@@ -62,13 +75,27 @@ namespace GeoLab2D.Controles
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            if (hexagono == null && flor == null && estrella == null) return;
+            if (hexagono == null && flor == null && estrella == null && vectorA == null) return;
 
             GraphicsState estado = e.Graphics.Save();
             try
             {
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                 PointF centro = new PointF(ClientSize.Width / 2f, ClientSize.Height / 2f);
+                if (vectorA != null)
+                {
+                    using (var ejes = new Pen(Color.LightGray, 1f))
+                    {
+                        e.Graphics.DrawLine(ejes, 16, centro.Y, ClientSize.Width - 16, centro.Y);
+                        e.Graphics.DrawLine(ejes, centro.X, 16, centro.X, ClientSize.Height - 16);
+                    }
+                    e.Graphics.DrawString("+X", Font, Brushes.DimGray, ClientSize.Width - 40, centro.Y + 6);
+                    e.Graphics.DrawString("+Y", Font, Brushes.DimGray, centro.X + 6, 16);
+                    e.Graphics.DrawString("O", Font, Brushes.DimGray, centro.X - 18, centro.Y + 6);
+                    DibujarVector(e.Graphics, centro, vectorA, Color.RoyalBlue, "A");
+                    DibujarVector(e.Graphics, centro, vectorB, Color.DarkOrange, "B");
+                    return;
+                }
                 if (estrella != null)
                 {
                     using (var pluma = new Pen(Color.BlueViolet, 2f))
@@ -120,6 +147,23 @@ namespace GeoLab2D.Controles
             for (int i = 0; i < vertices.Length; i++)
                 puntos[i] = new PointF(centro.X + vertices[i].X, centro.Y - vertices[i].Y);
             return puntos;
+        }
+
+        private void DibujarVector(Graphics graphics, PointF origen, Vector2D vector, Color color, string nombre)
+        {
+            PointF fin = new PointF(origen.X + (float)vector.X, origen.Y - (float)vector.Y);
+            using (var pluma = new Pen(color, 3f))
+            using (var pincel = new SolidBrush(color))
+            {
+                if (vector.Magnitud == 0)
+                    graphics.FillEllipse(pincel, origen.X - 4, origen.Y - 4, 8, 8);
+                else
+                {
+                    pluma.EndCap = LineCap.ArrowAnchor;
+                    graphics.DrawLine(pluma, origen, fin);
+                }
+                graphics.DrawString(nombre, Font, pincel, fin.X + 8, fin.Y + (nombre == "A" ? -20 : 8));
+            }
         }
     }
 }
