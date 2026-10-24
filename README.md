@@ -3,15 +3,19 @@
 Aplicación de escritorio para la tarea de Computación Gráfica, desarrollada
 en C# con Windows Forms y .NET Framework 4.7.2.
 
-## Avance actual: etapa 1
+## Avance actual: etapa 2
 
 - Referencias del proyecto y punto de entrada corregidos para el formulario `GeoLab2D`.
-- Lienzo blanco de al menos 800 × 600 píxeles, con doble búfer para el dibujo futuro.
+- Lienzo de al menos 800 × 600 píxeles, con doble búfer.
 - Contenedor con desplazamiento para acceder al lienzo al reducir la ventana.
 - Control de dibujo separado del formulario.
+- Hexágono generado con trigonometría y dividido en seis triángulos de colores.
+- Lado configurable de 1 a 280 píxeles, con un decimal; área y perímetro visibles.
+- Modelo matemático independiente de Windows Forms y pruebas reproducibles.
 
-Esta etapa prepara la aplicación; todavía no implementa las figuras ni las
-operaciones matemáticas de la entrega final.
+Las fórmulas, responsabilidades y casos de prueba están en
+[la documentación de la etapa 2](docs/Etapa2-Hexagono.md).
+La flor, las estrellas y las operaciones generales siguen pendientes.
 
 ## Ejecutar
 
@@ -31,8 +35,8 @@ Los commits deben reflejar cambios realmente realizados y comprobados.
 
 | Etapa | Alcance | Mensaje de commit sugerido |
 | --- | --- | --- |
-| 1 (actual) | Corregir inicio y preparar lienzo | `Prepara formulario y lienzo base de GeoLab2D` |
-| 2 | Hexágono regular, seis triángulos de colores y lado configurable; cálculo separado del dibujo | `Agrega hexágono regular de seis colores` |
+| 1 (completada) | Corregir inicio y preparar lienzo | `Prepara formulario y lienzo base de GeoLab2D` |
+| 2 (actual) | Hexágono regular, seis triángulos de colores y lado configurable; cálculo separado del dibujo | `Agrega hexágono regular de seis colores` |
 | 3 | Flor simétrica construida con cinco pentágonos regulares | `Agrega flor de margarita con pentagonos` |
 | 4 | Polígono estrellado con número de puntas configurable | `Agrega construccion de poligonos estrellados` |
 | 5 | Magnitud, dirección, producto punto y determinante de vectores | `Implementa operaciones vectoriales` |
@@ -55,10 +59,16 @@ con resultados conocidos; la etapa 9 consolida esas evidencias.
 
 ## Organización prevista
 
-`GeoLab2D.cs` coordina los controles; `Controles/LienzoGeometrico.cs` es la
-superficie de presentación. Las siguientes etapas añadirán las clases de
-geometría y matrices sin depender de controles de Windows Forms. Los puntos
-de dibujo se representarán mediante `PointF`.
+`GeoLab2D.cs` coordina los controles; `Controles/LienzoGeometrico.cs` dibuja.
+`Geometria/HexagonoRegular.cs` calcula los vértices `PointF`, el área y el perímetro
+sin depender de controles. Las siguientes etapas ampliarán la geometría y las matrices.
+
+## Verificar la etapa 2
+
+Compilar `Pruebas/GeoLab2D.Pruebas.csproj` y ejecutar
+`Pruebas/bin/Debug/GeoLab2D.Pruebas.exe`. Se comprueban longitudes, área,
+perímetro, entradas inválidas, actualización desde la interfaz y seis colores.
+La revisión manual está descrita en `docs/Etapa2-Hexagono.md`.
 
 ## Registrar este avance
 
@@ -66,8 +76,8 @@ Después de revisar y compilar, desde la raíz del repositorio:
 
 ```powershell
 git diff
-git add README.md GeoLab2D/GeoLab2D.csproj GeoLab2D/Program.cs GeoLab2D/GeoLab2D.Designer.cs GeoLab2D/Controles/LienzoGeometrico.cs
-git commit -m "Prepara formulario y lienzo base de GeoLab2D"
+git add README.md GeoLab2D/GeoLab2D.csproj GeoLab2D/GeoLab2D.cs GeoLab2D/GeoLab2D.Designer.cs GeoLab2D/Controles/LienzoGeometrico.cs GeoLab2D/Geometria/HexagonoRegular.cs Pruebas/GeoLab2D.Pruebas.csproj Pruebas/VerificarHexagono.cs docs/Etapa2-Hexagono.md
+git commit -m "Agrega hexagono regular de seis colores"
 git push
 ```
 

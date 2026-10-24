@@ -30,8 +30,13 @@
         {
             this.encabezado = new System.Windows.Forms.Label();
             this.contenedorLienzo = new System.Windows.Forms.Panel();
-            this.lienzo = new GeoLab2D.Controles.LienzoGeometrico();
+            this.lienzo = new global::GeoLab2D.Controles.LienzoGeometrico();
             this.estado = new System.Windows.Forms.Label();
+            this.parametros = new System.Windows.Forms.FlowLayoutPanel();
+            this.etiquetaLado = new System.Windows.Forms.Label();
+            this.lado = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.lado)).BeginInit();
+            this.parametros.SuspendLayout();
             this.contenedorLienzo.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -46,6 +51,22 @@
             this.encabezado.Text = "GeoLab2D | Laboratorio de geometría bidimensional\r\n";
             this.encabezado.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.encabezado.Click += new System.EventHandler(this.encabezado_Click);
+            // parametros
+            this.parametros.Dock = System.Windows.Forms.DockStyle.Top;
+            this.parametros.Height = 44;
+            this.parametros.Padding = new System.Windows.Forms.Padding(16, 6, 0, 0);
+            this.parametros.Controls.Add(this.etiquetaLado);
+            this.parametros.Controls.Add(this.lado);
+            this.etiquetaLado.AutoSize = true;
+            this.etiquetaLado.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.etiquetaLado.Text = "Lado del hexágono (px):";
+            this.lado.Name = "lado";
+            this.lado.DecimalPlaces = 1;
+            this.lado.Minimum = 1;
+            this.lado.Maximum = 280;
+            this.lado.Value = 150;
+            this.lado.Width = 100;
+            this.lado.ValueChanged += new System.EventHandler(this.lado_ValueChanged);
             // 
             // contenedorLienzo
             // 
@@ -74,24 +95,28 @@
             this.estado.Location = new System.Drawing.Point(0, 702);
             this.estado.Name = "estado";
             this.estado.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            this.estado.Size = new System.Drawing.Size(850, 28);
+            this.estado.Size = new System.Drawing.Size(850, 48);
             this.estado.TabIndex = 1;
-            this.estado.Text = "Lienzo: 800 × 600 píxeles | Próxima etapa: hexágono de seis colores";
+            this.estado.Text = "Etapa 2: hexágono regular de seis colores";
             this.estado.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // GeoLab2D
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(850, 730);
+            this.ClientSize = new System.Drawing.Size(850, 794);
             this.Controls.Add(this.contenedorLienzo);
             this.Controls.Add(this.estado);
+            this.Controls.Add(this.parametros);
             this.Controls.Add(this.encabezado);
             this.MinimumSize = new System.Drawing.Size(520, 420);
             this.Name = "GeoLab2D";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "GeoLab2D - Computación gráfica";
             this.contenedorLienzo.ResumeLayout(false);
+            this.parametros.ResumeLayout(false);
+            this.parametros.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lado)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -102,5 +127,8 @@
         private System.Windows.Forms.Panel contenedorLienzo;
         private Controles.LienzoGeometrico lienzo;
         private System.Windows.Forms.Label estado;
+        private System.Windows.Forms.FlowLayoutPanel parametros;
+        private System.Windows.Forms.Label etiquetaLado;
+        private System.Windows.Forms.NumericUpDown lado;
     }
 }
