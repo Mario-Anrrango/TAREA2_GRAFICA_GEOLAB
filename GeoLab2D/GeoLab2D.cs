@@ -16,5 +16,10 @@ namespace GeoLab2D
         {
             InitializeComponent();
         }
+
+        private void encabezado_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
