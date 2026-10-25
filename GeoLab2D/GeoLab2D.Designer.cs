@@ -28,21 +28,28 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            this.ayudas = new System.Windows.Forms.ToolTip(this.components);
+            this.errores = new System.Windows.Forms.ErrorProvider(this.components);
+            this.errores.ContainerControl = this;
+            this.contenedorHerramientas = new System.Windows.Forms.Panel();
+            this.tablaHerramientas = new System.Windows.Forms.TableLayoutPanel();
             this.encabezado = new System.Windows.Forms.Label();
             this.contenedorLienzo = new System.Windows.Forms.Panel();
             this.lienzo = new global::GeoLab2D.Controles.LienzoGeometrico();
             this.estado = new System.Windows.Forms.Label();
             this.parametros = new System.Windows.Forms.FlowLayoutPanel();
             this.etiquetaLado = new System.Windows.Forms.Label();
-            this.lado = new System.Windows.Forms.NumericUpDown();
+            this.lado = new global::GeoLab2D.Controles.EntradaNumericaValidada();
             this.selectorFigura = new System.Windows.Forms.ComboBox();
-            this.puntas = new System.Windows.Forms.NumericUpDown();
-            this.salto = new System.Windows.Forms.NumericUpDown();
+            this.puntas = new global::GeoLab2D.Controles.EntradaNumericaValidada();
+            this.salto = new global::GeoLab2D.Controles.EntradaNumericaValidada();
             this.etiquetaPuntas = new System.Windows.Forms.Label();
             this.etiquetaSalto = new System.Windows.Forms.Label();
             this.panelVectores = new global::GeoLab2D.Controles.PanelVectores();
             this.panelAnalisis = new global::GeoLab2D.Controles.PanelAnalisis();
             this.panelTransformaciones = new global::GeoLab2D.Controles.PanelTransformaciones();
+            this.panelColores = new global::GeoLab2D.Controles.PanelColores();
             ((System.ComponentModel.ISupportInitialize)(this.puntas)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.salto)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lado)).BeginInit();
@@ -119,6 +126,31 @@
             this.panelTransformaciones.Name = "panelTransformaciones";
             this.panelTransformaciones.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTransformaciones.TransformacionCambiada += new System.EventHandler(this.parametrosTransformacion_Cambiados);
+            this.panelColores.Name = "panelColores";
+            this.panelColores.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelColores.PaletaCambiada += new System.EventHandler(this.colores_Cambiados);
+            // Herramientas con desplazamiento independiente del lienzo.
+            this.contenedorHerramientas.Name = "contenedorHerramientas";
+            this.contenedorHerramientas.Dock = System.Windows.Forms.DockStyle.Top;
+            this.contenedorHerramientas.AutoScroll = true;
+            this.contenedorHerramientas.Height = 260;
+            this.tablaHerramientas.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tablaHerramientas.AutoSize = true;
+            this.tablaHerramientas.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tablaHerramientas.ColumnCount = 1;
+            this.tablaHerramientas.RowCount = 5;
+            this.tablaHerramientas.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tablaHerramientas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tablaHerramientas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tablaHerramientas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tablaHerramientas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tablaHerramientas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tablaHerramientas.Controls.Add(this.parametros, 0, 0);
+            this.tablaHerramientas.Controls.Add(this.panelColores, 0, 1);
+            this.tablaHerramientas.Controls.Add(this.panelTransformaciones, 0, 2);
+            this.tablaHerramientas.Controls.Add(this.panelVectores, 0, 3);
+            this.tablaHerramientas.Controls.Add(this.panelAnalisis, 0, 4);
+            this.contenedorHerramientas.Controls.Add(this.tablaHerramientas);
             // 
             // contenedorLienzo
             // 
@@ -159,10 +191,7 @@
             this.ClientSize = new System.Drawing.Size(850, 794);
             this.Controls.Add(this.contenedorLienzo);
             this.Controls.Add(this.estado);
-            this.Controls.Add(this.panelVectores);
-            this.Controls.Add(this.panelAnalisis);
-            this.Controls.Add(this.panelTransformaciones);
-            this.Controls.Add(this.parametros);
+            this.Controls.Add(this.contenedorHerramientas);
             this.Controls.Add(this.encabezado);
             this.MinimumSize = new System.Drawing.Size(520, 420);
             this.Name = "GeoLab2D";
@@ -195,5 +224,10 @@
         private Controles.PanelVectores panelVectores;
         private Controles.PanelAnalisis panelAnalisis;
         private Controles.PanelTransformaciones panelTransformaciones;
+        private Controles.PanelColores panelColores;
+        private System.Windows.Forms.Panel contenedorHerramientas;
+        private System.Windows.Forms.TableLayoutPanel tablaHerramientas;
+        private System.Windows.Forms.ToolTip ayudas;
+        private System.Windows.Forms.ErrorProvider errores;
     }
 }

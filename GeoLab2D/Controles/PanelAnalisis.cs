@@ -21,12 +21,12 @@ namespace GeoLab2D.Controles
             AutoSize = true;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             Padding = new Padding(16, 4, 16, 8);
-            var tabla = new TableLayoutPanel { Dock = DockStyle.Top, AutoSize = true, ColumnCount = 1, RowCount = 4 };
+            var tabla = new TableLayoutPanel { Dock = DockStyle.Top, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, ColumnCount = 1, RowCount = 4 };
             tabla.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
             figura = new ComboBox { Name = "figuraAnalisis", DropDownStyle = ComboBoxStyle.DropDownList, Width = 220 };
             figura.Items.AddRange(new object[] { "Analizar hexágono", "Analizar margarita", "Analizar estrella" });
             figura.SelectedIndex = 0;
-            var entradas = new FlowLayoutPanel { AutoSize = true, Dock = DockStyle.Fill, WrapContents = true };
+            var entradas = new FlowLayoutPanel { AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Dock = DockStyle.Fill, WrapContents = true };
             ax = Agregar(entradas, "Ax", -120); ay = Agregar(entradas, "Ay", -60);
             bx = Agregar(entradas, "Bx", 160); by = Agregar(entradas, "By", 40);
             px = Agregar(entradas, "Px", 30); py = Agregar(entradas, "Py", 100);
@@ -44,9 +44,9 @@ namespace GeoLab2D.Controles
 
         private static NumericUpDown Agregar(FlowLayoutPanel fila, string nombre, decimal valor)
         {
-            var grupo = new FlowLayoutPanel { AutoSize = true, WrapContents = false, Margin = new Padding(0, 0, 8, 0) };
+            var grupo = new FlowLayoutPanel { AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, WrapContents = false, Margin = new Padding(0, 0, 8, 0) };
             grupo.Controls.Add(new Label { AutoSize = true, Text = nombre, Margin = new Padding(0, 4, 4, 0) });
-            var entrada = new NumericUpDown { Name = "analisis" + nombre, Minimum = -250, Maximum = 250,
+            var entrada = new EntradaNumericaValidada { Name = "analisis" + nombre, Minimum = -250, Maximum = 250,
                 Value = valor, DecimalPlaces = 2, Width = 75 };
             grupo.Controls.Add(entrada);
             fila.Controls.Add(grupo);

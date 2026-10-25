@@ -3,6 +3,7 @@ using System.Drawing.Drawing2D;
 using System.ComponentModel;
 using System.Windows.Forms;
 using GeoLab2D.Geometria;
+using GeoLab2D.Presentacion;
 
 namespace GeoLab2D.Controles
 {
@@ -31,11 +32,20 @@ namespace GeoLab2D.Controles
                 Invalidate();
             }
         }
-        private static readonly Color[] Colores =
+        private PaletaFiguras paleta = PaletaFiguras.Predeterminada();
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public PaletaFiguras Paleta
         {
-            Color.Coral, Color.Gold, Color.MediumSeaGreen,
-            Color.DeepSkyBlue, Color.MediumPurple, Color.HotPink
-        };
+            get { return paleta; }
+            set
+            {
+                if (value == null) throw new System.ArgumentNullException("value");
+                paleta = value;
+                Invalidate();
+            }
+        }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -132,7 +142,7 @@ namespace GeoLab2D.Controles
                 }
                 if (estrella != null)
                 {
-                    using (var pluma = new Pen(Color.BlueViolet, 2f))
+                    using (var pluma = new Pen(paleta.ObtenerColor(2, 0), 2f))
                     {
                         foreach (PointF[] recorrido in estrella.ObtenerRecorridos())
                             e.Graphics.DrawPolygon(pluma, ConvertirFiguraAPantalla(recorrido, centro));
@@ -141,12 +151,14 @@ namespace GeoLab2D.Controles
                 }
                 if (flor != null)
                 {
-                    using (var pincel = new SolidBrush(Color.Red))
-                    using (var pluma = new Pen(Color.DarkRed, 1f))
+                    PointF[][] petalos = flor.ObtenerPetalos();
+                    for (int i = 0; i < petalos.Length; i++)
                     {
-                        foreach (PointF[] petalo in flor.ObtenerPetalos())
+                        Color color = paleta.ObtenerColor(1, i);
+                        using (var pincel = new SolidBrush(color))
+                        using (var pluma = new Pen(Color.FromArgb(color.R / 2, color.G / 2, color.B / 2), 1f))
                         {
-                            PointF[] puntos = ConvertirFiguraAPantalla(petalo, centro);
+                            PointF[] puntos = ConvertirFiguraAPantalla(petalos[i], centro);
                             e.Graphics.FillPolygon(pincel, puntos);
                             e.Graphics.DrawPolygon(pluma, puntos);
                         }
@@ -161,7 +173,7 @@ namespace GeoLab2D.Controles
                     for (int i = 0; i < vertices.Length; i++)
                     {
                         PointF[] triangulo = { centroHexagono, vertices[i], vertices[(i + 1) % vertices.Length] };
-                        using (var pincel = new SolidBrush(Colores[i]))
+                        using (var pincel = new SolidBrush(paleta.ObtenerColor(0, i)))
                             e.Graphics.FillPolygon(pincel, triangulo);
                     }
                     for (int i = 0; i < vertices.Length; i++)

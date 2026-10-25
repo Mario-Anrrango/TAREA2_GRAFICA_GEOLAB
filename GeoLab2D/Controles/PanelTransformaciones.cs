@@ -27,9 +27,9 @@ namespace GeoLab2D.Controles
             AutoSize = true;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             Padding = new Padding(16, 4, 16, 8);
-            var tabla = new TableLayoutPanel { Dock = DockStyle.Top, AutoSize = true, ColumnCount = 1, RowCount = 4 };
+            var tabla = new TableLayoutPanel { Dock = DockStyle.Top, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, ColumnCount = 1, RowCount = 4 };
             tabla.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            var entradas = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, WrapContents = true };
+            var entradas = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, WrapContents = true };
             tx = Agregar(entradas, "Tx (px)", "traslacionX", -250, 250, 0, 1);
             ty = Agregar(entradas, "Ty (px)", "traslacionY", -250, 250, 0, 1);
             angulo = Agregar(entradas, "Ángulo (°)", "angulo", -360, 360, 0, 1);
@@ -53,9 +53,9 @@ namespace GeoLab2D.Controles
         private static NumericUpDown Agregar(FlowLayoutPanel fila, string texto, string nombre,
             decimal minimo, decimal maximo, decimal valor, decimal incremento)
         {
-            var grupo = new FlowLayoutPanel { AutoSize = true, WrapContents = false, Margin = new Padding(0, 0, 8, 0) };
+            var grupo = new FlowLayoutPanel { AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, WrapContents = false, Margin = new Padding(0, 0, 8, 0) };
             grupo.Controls.Add(new Label { Text = texto, AutoSize = true, Margin = new Padding(0, 4, 4, 0) });
-            var entrada = new NumericUpDown { Name = nombre, Minimum = minimo, Maximum = maximo,
+            var entrada = new EntradaNumericaValidada { Name = nombre, Minimum = minimo, Maximum = maximo,
                 Value = valor, DecimalPlaces = 2, Increment = incremento, Width = 80 };
             grupo.Controls.Add(entrada);
             fila.Controls.Add(grupo);

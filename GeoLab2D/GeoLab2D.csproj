@@ -62,6 +62,13 @@
     <Compile Include="Geometria\Vector2D.cs" />
     <Compile Include="Geometria\GeometriaPlana.cs" />
     <Compile Include="Geometria\Matriz3x3.cs" />
+    <Compile Include="Presentacion\PaletaFiguras.cs" />
+    <Compile Include="Controles\EntradaNumericaValidada.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controles\PanelColores.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controles\PanelTransformaciones.cs">
       <SubType>UserControl</SubType>
     </Compile>

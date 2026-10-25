@@ -7,10 +7,50 @@ namespace GeoLab2D
 {
     public partial class GeoLab2D : Form
     {
+        private bool ajustandoHerramientas;
+
         public GeoLab2D()
         {
             InitializeComponent();
+            ConfigurarEntradas(this);
+            ayudas.SetToolTip(puntas, "De 5 a 64 puntas. El salto máximo depende de las puntas actuales.");
+            ayudas.SetToolTip(salto, "Salto entre vértices: de 2 a la parte entera de (N - 1) / 2.");
+            Resize += (sender, e) => AjustarHerramientas();
+            tablaHerramientas.SizeChanged += (sender, e) => AjustarHerramientas();
             selectorFigura.SelectedIndex = 0;
+        }
+
+        private void ConfigurarEntradas(Control contenedor)
+        {
+            foreach (Control control in contenedor.Controls)
+            {
+                var entrada = control as Controles.EntradaNumericaValidada;
+                if (entrada != null)
+                {
+                    ayudas.SetToolTip(entrada, string.Format("Rango: {0} a {1}. Decimales: {2}. Enter confirma el valor.",
+                        entrada.Minimum, entrada.Maximum, entrada.DecimalPlaces));
+                    entrada.ValidacionCambiada += (sender, e) =>
+                        errores.SetError(entrada, entrada.ErrorEntrada ?? "");
+                }
+                ConfigurarEntradas(control);
+            }
+        }
+
+        private void AjustarHerramientas()
+        {
+            if (ajustandoHerramientas) return;
+            ajustandoHerramientas = true;
+            try
+            {
+                int maximo = Math.Max(90, ClientSize.Height / 2 - encabezado.Height);
+                contenedorHerramientas.Height = Math.Min(Math.Max(70, tablaHerramientas.PreferredSize.Height), maximo);
+            }
+            finally { ajustandoHerramientas = false; }
+        }
+
+        private void colores_Cambiados(object sender, EventArgs e)
+        {
+            lienzo.Paleta = panelColores.Paleta;
         }
 
         private void lado_ValueChanged(object sender, EventArgs e)
@@ -73,6 +113,9 @@ namespace GeoLab2D
             panelVectores.Visible = esVectores;
             panelAnalisis.Visible = esAnalisis;
             panelTransformaciones.Visible = !esVectores;
+            panelColores.Visible = selectorFigura.SelectedIndex <= 2;
+            if (selectorFigura.SelectedIndex <= 2) panelColores.SeleccionarFigura(selectorFigura.SelectedIndex);
+            lienzo.Paleta = panelColores.Paleta;
             lado.Enabled = !esVectores;
             etiquetaLado.Enabled = !esVectores;
             puntas.Enabled = esEstrella;
@@ -137,7 +180,7 @@ namespace GeoLab2D
                 var figura = new FlorMargarita((float)lado.Value);
                 lienzo.Flor = figura;
                 estado.Text = string.Format(
-                    "Exterior base: {0:0.0} px | Pétalo base: {1:0.00} px | Área roja actual: {2:0.00} px²\r\nMargarita: cinco pentágonos regulares de base | Centro sin relleno",
+                    "Exterior base: {0:0.0} px | Pétalo base: {1:0.00} px | Área de pétalos actual: {2:0.00} px²\r\nMargarita: cinco pentágonos regulares de base | Centro sin relleno",
                     figura.LadoExterior, figura.LadoPetalo, AreaContornos(contornosActuales));
             }
             else if (esEstrella)
@@ -157,6 +200,7 @@ namespace GeoLab2D
                 lienzo.MostrarVectores(panelVectores.VectorA, panelVectores.VectorB);
                 estado.Text = "Vectores desde O(0, 0) | Eje X hacia la derecha, Y hacia arriba\r\nEdite A.x, A.y, B.x y B.y para comprobar las operaciones";
             }
+            AjustarHerramientas();
         }
 
         private void encabezado_Click(object sender, EventArgs e)

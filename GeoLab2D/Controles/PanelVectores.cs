@@ -22,10 +22,10 @@ namespace GeoLab2D.Controles
             Padding = new Padding(16, 4, 16, 8);
             var tabla = new TableLayoutPanel
             {
-                Dock = DockStyle.Top, AutoSize = true, ColumnCount = 1, RowCount = 3
+                Dock = DockStyle.Top, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, ColumnCount = 1, RowCount = 3
             };
             tabla.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            var entradas = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, WrapContents = true };
+            var entradas = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, WrapContents = true };
             ax = CrearEntrada("ax", 120);
             ay = CrearEntrada("ay", 80);
             bx = CrearEntrada("bx", -60);
@@ -49,13 +49,13 @@ namespace GeoLab2D.Controles
 
         private static NumericUpDown CrearEntrada(string nombre, decimal valor)
         {
-            return new NumericUpDown { Name = nombre, Minimum = -250, Maximum = 250,
+            return new EntradaNumericaValidada { Name = nombre, Minimum = -250, Maximum = 250,
                 DecimalPlaces = 2, Increment = 1, Value = valor, Width = 85 };
         }
 
         private static void AgregarComponente(FlowLayoutPanel fila, string texto, NumericUpDown entrada)
         {
-            var grupo = new FlowLayoutPanel { AutoSize = true, WrapContents = false, Margin = new Padding(0, 0, 10, 0) };
+            var grupo = new FlowLayoutPanel { AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, WrapContents = false, Margin = new Padding(0, 0, 10, 0) };
             grupo.Controls.Add(new Label { Text = texto, AutoSize = true, Margin = new Padding(0, 4, 4, 0) });
             grupo.Controls.Add(entrada);
             fila.Controls.Add(grupo);
