@@ -6,7 +6,7 @@ using GeoLab2D.Presentacion;
 
 namespace GeoLab2D.Controles
 {
-    public sealed class PanelColores : UserControl
+    public sealed class PanelColores : PanelContenidoAjustable
     {
         private PaletaFiguras paleta = PaletaFiguras.Predeterminada();
         private int figura = -1;
@@ -33,10 +33,10 @@ namespace GeoLab2D.Controles
             elemento = new ComboBox { Name = "elementoColor", DropDownStyle = ComboBoxStyle.DropDownList, Width = 135 };
             cambiar = new BotonRedondeado { Name = "cambiarColor", Text = "Cambiar color…", AutoSize = true, UseVisualStyleBackColor = false };
             var restablecer = new BotonRedondeado { Name = "restablecerColores", Text = "Restablecer colores", AutoSize = true };
-            mensaje = new Label { Name = "mensajeColor", AutoSize = true, Dock = DockStyle.Fill };
+            mensaje = new TextoResultados { Name = "mensajeColor", Dock = DockStyle.Fill };
             fila.Controls.Add(elemento); fila.Controls.Add(cambiar); fila.Controls.Add(restablecer);
             tabla.Controls.Add(fila, 0, 0); tabla.Controls.Add(mensaje, 0, 1);
-            Controls.Add(tabla);
+            UsarContenido(tabla);
             elemento.SelectedIndexChanged += (sender, e) =>
             {
                 ActualizarMuestra();
@@ -63,7 +63,7 @@ namespace GeoLab2D.Controles
             try { paleta = paleta.ConColor(figura, elemento.SelectedIndex, color); }
             catch (ArgumentException error)
             {
-                mensaje.Text = error.Message;
+                mensaje.Text = "[Color no válido]\r\n" + error.Message;
                 mensaje.ForeColor = Color.Salmon;
                 return false;
             }
@@ -93,7 +93,7 @@ namespace GeoLab2D.Controles
             cambiar.BackColor = color;
             cambiar.ForeColor = 0.299 * color.R + 0.587 * color.G + 0.114 * color.B < 140 ? Color.White : Color.Black;
             mensaje.ForeColor = TemaOscuro.Secundario;
-            mensaje.Text = string.Format("RGB ({0}; {1}; {2}) | Los colores se conservan durante esta sesión.", color.R, color.G, color.B);
+            mensaje.Text = string.Format("[Color seleccionado]\r\nRGB ({0}; {1}; {2})\r\n\r\nLos colores se conservan durante esta sesión.", color.R, color.G, color.B);
         }
 
         private void Cambiar_Click(object sender, EventArgs e)

@@ -5,7 +5,7 @@ using GeoLab2D.Geometria;
 
 namespace GeoLab2D.Controles
 {
-    public sealed class PanelTransformaciones : UserControl
+    public sealed class PanelTransformaciones : PanelContenidoAjustable
     {
         private readonly NumericUpDown tx, ty, angulo, sx, sy;
         private readonly Label matrizTexto, limites;
@@ -38,14 +38,14 @@ namespace GeoLab2D.Controles
             var restablecer = new BotonRedondeado { Name = "restablecerTransformacion", Text = "Restablecer", AutoSize = true };
             restablecer.Click += Restablecer_Click;
             entradas.Controls.Add(restablecer);
-            matrizTexto = new Label { Name = "matrizTransformacion", AutoSize = true, Dock = DockStyle.Fill };
-            limites = new Label { Name = "limitesTransformacion", AutoSize = true, Dock = DockStyle.Fill };
+            matrizTexto = new TextoResultados { Name = "matrizTransformacion", Dock = DockStyle.Fill };
+            limites = new TextoResultados { Name = "limitesTransformacion", Dock = DockStyle.Fill };
             tabla.Controls.Add(entradas, 0, 0);
-            tabla.Controls.Add(new Label { AutoSize = true, Dock = DockStyle.Fill,
-                Text = "Orden: escala → rotación alrededor de O → traslación | M = T · R · S" }, 0, 1);
+            tabla.Controls.Add(new TextoResultados { Dock = DockStyle.Fill,
+                Text = "[Orden de aplicación]\r\n1. Escalar con Sx y Sy.\r\n2. Rotar alrededor del origen O.\r\n3. Trasladar con Tx y Ty.\r\n\r\nM = T · R · S" }, 0, 1);
             tabla.Controls.Add(matrizTexto, 0, 2);
             tabla.Controls.Add(limites, 0, 3);
-            Controls.Add(tabla);
+            UsarContenido(tabla);
             foreach (NumericUpDown entrada in new[] { tx, ty, angulo, sx, sy }) entrada.ValueChanged += Entrada_Cambiada;
             ActualizarMatriz();
         }
@@ -64,8 +64,8 @@ namespace GeoLab2D.Controles
 
         public void MostrarLimites(bool fuera)
         {
-            limites.Text = fuera ? "Parte de la figura queda fuera del lienzo; ajuste escala o traslación."
-                : "Figura completa dentro del lienzo.";
+            limites.Text = "[Visibilidad]\r\n" + (fuera ? "Parte de la figura queda fuera del lienzo.\r\nAjuste la escala o la traslación."
+                : "Figura completa dentro del lienzo.");
         }
 
         public void Desplazar(float x, float y)
@@ -84,7 +84,7 @@ namespace GeoLab2D.Controles
         {
             Matriz3x3 m = Matriz;
             matrizTexto.Text = string.Format(
-                "M  [{0:0.000}; {1:0.000}; {2:0.00}]\r\n   [{3:0.000}; {4:0.000}; {5:0.00}]\r\n   [0; 0; 1]",
+                "[Matriz compuesta]\r\n[{0:0.000}; {1:0.000}; {2:0.00}]\r\n[{3:0.000}; {4:0.000}; {5:0.00}]\r\n[0; 0; 1]",
                 m[0, 0], m[0, 1], m[0, 2], m[1, 0], m[1, 1], m[1, 2]);
         }
 

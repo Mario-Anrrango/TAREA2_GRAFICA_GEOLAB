@@ -5,7 +5,7 @@ using GeoLab2D.Geometria;
 
 namespace GeoLab2D.Controles
 {
-    public sealed class PanelAnalisis : UserControl
+    public sealed class PanelAnalisis : PanelContenidoAjustable
     {
         private readonly ComboBox figura;
         private readonly NumericUpDown ax, ay, bx, by, px, py;
@@ -41,21 +41,21 @@ namespace GeoLab2D.Controles
             Padding = new Padding(16, 4, 16, 8);
             var tabla = new TableLayoutPanel { Dock = DockStyle.Top, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, ColumnCount = 1, RowCount = 4 };
             tabla.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            figura = new ComboBox { Name = "figuraAnalisis", DropDownStyle = ComboBoxStyle.DropDownList, Width = 220 };
+            figura = new ComboBox { Name = "figuraAnalisis", DropDownStyle = ComboBoxStyle.DropDownList,
+                Dock = DockStyle.Fill, DropDownWidth = 270 };
             figura.Items.AddRange(new object[] { "Analizar hexágono", "Analizar margarita", "Analizar estrella" });
             figura.SelectedIndex = 0;
             var entradas = new FlowLayoutPanel { AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Dock = DockStyle.Fill, WrapContents = true };
             ax = Agregar(entradas, "Ax", -120); ay = Agregar(entradas, "Ay", -60);
             bx = Agregar(entradas, "Bx", 160); by = Agregar(entradas, "By", 40);
             px = Agregar(entradas, "Px", 30); py = Agregar(entradas, "Py", 100);
-            resultados = new Label { Name = "resultadosAnalisis", AutoSize = true, Dock = DockStyle.Fill,
-                Padding = new Padding(0, 4, 0, 4) };
+            resultados = new TextoResultados { Name = "resultadosAnalisis", Dock = DockStyle.Fill };
             tabla.Controls.Add(figura, 0, 0);
             tabla.Controls.Add(entradas, 0, 1);
             tabla.Controls.Add(resultados, 0, 2);
-            tabla.Controls.Add(new Label { AutoSize = true, Dock = DockStyle.Fill,
-                Text = "AB: azul | P: naranja | Q más cercano: verde | Coordenadas cartesianas en px" }, 0, 3);
-            Controls.Add(tabla);
+            tabla.Controls.Add(new TextoResultados { Dock = DockStyle.Fill,
+                Text = "[Referencia del dibujo]\r\nAB: segmento azul.\r\nP: punto naranja.\r\nQ: punto verde más cercano a P.\r\n\r\nCoordenadas cartesianas en píxeles." }, 0, 3);
+            UsarContenido(tabla);
             figura.SelectedIndexChanged += Entrada_Cambiada;
             foreach (NumericUpDown entrada in new[] { ax, ay, bx, by, px, py }) entrada.ValueChanged += Entrada_Cambiada;
         }
@@ -82,12 +82,12 @@ namespace GeoLab2D.Controles
             ProyeccionSegmento proyeccion = GeometriaPlana.Proyectar(A, B, P);
             string orientacion = A == B ? "indeterminada (A = B)" : GeometriaPlana.Orientar(A, B, P).ToString();
             resultados.Text = string.Format(
-                "{0}: {1:0.00} px² | {2}: {3:0.00} px\r\nP respecto a la figura: {4} | Orientación (A, B, P): {5}\r\nQ = ({6:0.00}; {7:0.00}) | Distancia P–Q: {8:0.00} px | t = {9:0.000}{10}",
+                "[Medidas de la figura]\r\n{0}: {1:0.00} px²\r\n{2}: {3:0.00} px\r\n\r\n[Posición de P]\r\nP respecto a la figura: {4}\r\nOrientación (A, B, P): {5}\r\n\r\n[Proyección sobre AB]\r\nQ = ({6:0.00}; {7:0.00})\r\nDistancia P–Q: {8:0.00} px\r\nt = {9:0.000}{10}",
                 esEstrella ? "Área algebraica (valor absoluto)" : "Área", Math.Abs(area),
                 esEstrella ? "Longitud de trazos" : "Perímetro de contornos", perimetro,
                 GeometriaPlana.Ubicar(contornos, P), orientacion,
                 proyeccion.Punto.X, proyeccion.Punto.Y, proyeccion.Distancia, proyeccion.Parametro,
-                proyeccion.SegmentoDegenerado ? " | AB reducido a un punto" : "");
+                proyeccion.SegmentoDegenerado ? "\r\nAB reducido a un punto" : "");
         }
 
         private void Entrada_Cambiada(object sender, EventArgs e)

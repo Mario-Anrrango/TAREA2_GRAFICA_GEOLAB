@@ -57,8 +57,8 @@ namespace GeoLab2D
             resumenFigura = new Label { Name = "resumenFigura", AutoSize = true, Dock = DockStyle.Top,
                 Padding = new Padding(10), MaximumSize = new Size(284, 0), MinimumSize = new Size(260, 0) };
             tablaHerramientas.Controls.Add(new SeccionDesplegable("RESULTADOS", resumenFigura), 0, 5);
-            tablaHerramientas.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(278, 0),
-                Padding = new Padding(8), Text = "Clic: selecciona un sector o pétalo. Arrastra: mueve la figura o los puntos. Coordenadas del cursor al pie." }, 0, 6);
+            tablaHerramientas.Controls.Add(new TextoResultados { MaximumSize = new Size(278, 0),
+                Padding = new Padding(8), Text = "[Cómo interactuar]\r\nClic: selecciona un sector o pétalo.\r\n\r\nArrastre: mueve la figura o los puntos.\r\n\r\nCursor: consulta sus coordenadas al pie." }, 0, 6);
             tablaHerramientas.ResumeLayout(true);
 
             var trabajo = new Panel { Name = "areaTrabajo", Dock = DockStyle.Fill, Padding = new Padding(0, 8, 12, 8) };
@@ -124,6 +124,7 @@ namespace GeoLab2D
             configurandoDiseno = false;
             ResumeLayout(true);
             AjustarLienzo();
+            Shown += (sender, e) => contenedorHerramientas.AutoScrollPosition = Point.Empty;
         }
 
         private static Control FilaParametro(Label etiqueta, NumericUpDown numero)

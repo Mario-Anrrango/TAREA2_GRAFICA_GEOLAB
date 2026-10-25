@@ -64,6 +64,12 @@
     <Compile Include="Geometria\Matriz3x3.cs" />
     <Compile Include="Presentacion\PaletaFiguras.cs" />
     <Compile Include="Presentacion\TemaOscuro.cs" />
+    <Compile Include="Controles\TextoResultados.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controles\PanelContenidoAjustable.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controles\BotonRedondeado.cs">
       <SubType>Component</SubType>
     </Compile>

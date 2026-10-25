@@ -6,7 +6,7 @@ using GeoLab2D.Geometria;
 namespace GeoLab2D.Controles
 {
     /// <summary>Entrada y resultados de dos vectores; la aritmética pertenece a Vector2D.</summary>
-    public sealed class PanelVectores : UserControl
+    public sealed class PanelVectores : PanelContenidoAjustable
     {
         private readonly NumericUpDown ax, ay, bx, by;
         private readonly Label resultados;
@@ -48,14 +48,13 @@ namespace GeoLab2D.Controles
             AgregarComponente(entradas, "A.y", ay);
             AgregarComponente(entradas, "B.x", bx);
             AgregarComponente(entradas, "B.y", by);
-            resultados = new Label { Name = "resultadosVectores", AutoSize = true, Dock = DockStyle.Fill,
-                Padding = new Padding(0, 4, 0, 4) };
-            var ayuda = new Label { AutoSize = true, Dock = DockStyle.Fill,
-                Text = "A: azul | B: naranja | Componentes en px | Dirección desde +X, antihoraria" };
+            resultados = new TextoResultados { Name = "resultadosVectores", Dock = DockStyle.Fill };
+            var ayuda = new TextoResultados { Dock = DockStyle.Fill,
+                Text = "[Cómo interpretar]\r\nA: flecha azul.\r\nB: flecha naranja.\r\n\r\nLa dirección se mide desde +X, en sentido antihorario.\r\nLas componentes se expresan en píxeles." };
             tabla.Controls.Add(entradas, 0, 0);
             tabla.Controls.Add(resultados, 0, 1);
             tabla.Controls.Add(ayuda, 0, 2);
-            Controls.Add(tabla);
+            UsarContenido(tabla);
             foreach (NumericUpDown entrada in new[] { ax, ay, bx, by })
                 entrada.ValueChanged += Entrada_ValueChanged;
             ActualizarResultados();
@@ -86,7 +85,7 @@ namespace GeoLab2D.Controles
         {
             Vector2D a = VectorA, b = VectorB;
             resultados.Text = string.Format(
-                "|A| = {0:0.00} px; dirección A = {1}\r\n|B| = {2:0.00} px; dirección B = {3}\r\nA · B = {4:0.00} px²; det(A, B) = {5:0.00} px²",
+                "[Vector A]\r\n|A| = {0:0.00} px\r\nDirección A = {1}\r\n\r\n[Vector B]\r\n|B| = {2:0.00} px\r\nDirección B = {3}\r\n\r\n[Operaciones entre A y B]\r\nA · B = {4:0.00} px²\r\ndet(A, B) = {5:0.00} px²",
                 a.Magnitud, Direccion(a), b.Magnitud, Direccion(b), a.ProductoPunto(b), a.Determinante(b));
         }
 
