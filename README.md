@@ -24,6 +24,10 @@ en C# con Windows Forms y .NET Framework 4.7.2.
 - Matriz visible, botón Restablecer y análisis de las figuras transformadas.
 - Edición de colores por sector, pétalo y trazo, con restablecimiento por figura.
 - Validación de texto numérico, avisos y ayudas; herramientas con desplazamiento independiente.
+- Selección de sectores y pétalos por clic, sincronizada con colores, y coordenadas del cursor.
+
+La selección y su demostración para el video se explican en
+[Interacción en el lienzo](docs/Interaccion-Lienzo.md).
 
 Las fórmulas, responsabilidades y casos de prueba están en
 [la documentación del hexágono](docs/Etapa2-Hexagono.md) y

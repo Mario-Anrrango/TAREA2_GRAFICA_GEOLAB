@@ -28,10 +28,23 @@ internal static class VerificarDiseno
             var selector = (ComboBox)Buscar(ventana, "selectorFigura");
             var tx = (NumericUpDown)Buscar(ventana, "traslacionX");
             var ty = (NumericUpDown)Buscar(ventana, "traslacionY");
+            var elementoColor = (ComboBox)Buscar(ventana, "elementoColor");
+            var coordenadas = (Label)Buscar(ventana, "coordenadasCursor");
+            PointF? posicionCursor = null;
+            lienzo.PosicionCursorCambiada += (sender, e) => posicionCursor = e.Punto;
             Exigir(lienzo.MostrarCuadricula && lienzo.MostrarEjes, "No se activaron cuadrícula y ejes.");
             Exigir(Buscar(ventana, "contenedorHerramientas").Dock == DockStyle.Left, "No se configuró la barra lateral.");
+            Arrastrar(lienzo, new PointF(-70, 30), new PointF(-70, 30));
+            Exigir(elementoColor.SelectedIndex == 2, "El clic no seleccionó el sector geométrico correcto.");
+            Exigir(tx.Value == 0 && ty.Value == 0, "Un clic trasladó la figura.");
+            Exigir(posicionCursor.HasValue && coordenadas.Text.Contains(string.Format("X: {0:0.00}", posicionCursor.Value.X)) &&
+                coordenadas.Text.Contains(string.Format("Y: {0:0.00}", posicionCursor.Value.Y)), "Las coordenadas del cursor no se presentan.");
+            typeof(LienzoGeometrico).GetMethod("OnMouseLeave", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(lienzo, new object[] { EventArgs.Empty });
+            Exigir(!posicionCursor.HasValue && coordenadas.Text.Contains("—"), "Las coordenadas no se limpian al salir.");
             Arrastrar(lienzo, new PointF(40, -20), new PointF(70, 0));
             Exigir(tx.Value == 30 && ty.Value == 20, "Arrastrar la figura no actualizó Tx y Ty.");
+            Exigir(elementoColor.SelectedIndex == 2, "Arrastrar cambió la selección como si fuera un clic.");
             var superponer = (CheckBox)Buscar(ventana, "mostrarAnalisis");
             superponer.Checked = true;
             Exigir(lienzo.Hexagono != null, "Superponer análisis eliminó la figura coloreada.");
@@ -59,7 +72,29 @@ internal static class VerificarDiseno
             ((NumericUpDown)Buscar(ventana, "puntas")).Value = 64;
             Exigir(lienzo.Estrella.Puntas == 64, "Se alteró el máximo de puntas.");
             Exigir(lienzo.Width >= 800 && lienzo.Height >= 600, "El lienzo es inferior al mínimo.");
+            superponer.Checked = false;
+            selector.SelectedIndex = 0;
+            tx.Value = 70; ty.Value = -30;
+            ((NumericUpDown)Buscar(ventana, "angulo")).Value = 45;
+            ((NumericUpDown)Buscar(ventana, "escalaX")).Value = 1.2m;
+            ((NumericUpDown)Buscar(ventana, "escalaY")).Value = 0.8m;
+            PointF sectorTransformado = lienzo.Transformacion.Transformar(new PointF(60, 30));
+            Arrastrar(lienzo, sectorTransformado, sectorTransformado);
+            Exigir(elementoColor.SelectedIndex == 0 && tx.Value == 70 && ty.Value == -30,
+                "La selección del sector no respeta la transformación.");
+            selector.SelectedIndex = 1;
+            PointF[] petalo = lienzo.Flor.ObtenerPetalos()[4];
+            float x = 0, y = 0;
+            foreach (PointF punto in petalo) { x += punto.X / 5; y += punto.Y / 5; }
+            PointF centroPetalo = lienzo.Transformacion.Transformar(new PointF(x, y));
+            Arrastrar(lienzo, centroPetalo, centroPetalo);
+            Exigir(elementoColor.SelectedIndex == 4, "El clic no seleccionó el pétalo transformado.");
+            PointF centroFlor = lienzo.Transformacion.Transformar(PointF.Empty);
+            Arrastrar(lienzo, centroFlor, centroFlor);
+            Exigir(elementoColor.SelectedIndex == 4, "El hueco de la margarita seleccionó un pétalo.");
+            Arrastrar(lienzo, new PointF(-350, -280), new PointF(-350, -280));
+            Exigir(elementoColor.SelectedIndex == 4, "Un clic fuera de la figura cambió la selección.");
         }
-        Console.WriteLine("Correcto: barra lateral, cuadrícula, secciones, arrastre de figuras, puntos y vectores.");
+        Console.WriteLine("Correcto: arrastre, selección por clic, figuras transformadas y coordenadas del cursor.");
     }
 }

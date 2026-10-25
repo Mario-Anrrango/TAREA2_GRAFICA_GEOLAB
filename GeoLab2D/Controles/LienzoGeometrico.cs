@@ -178,6 +178,7 @@ namespace GeoLab2D.Controles
             }
             finally
             {
+                DibujarSeleccion(e.Graphics, new PointF(ClientSize.Width / 2f, ClientSize.Height / 2f));
                 if (analisisSuperpuesto)
                     DibujarPuntosAnalisis(e.Graphics, new PointF(ClientSize.Width / 2f, ClientSize.Height / 2f));
                 e.Graphics.Restore(estado);

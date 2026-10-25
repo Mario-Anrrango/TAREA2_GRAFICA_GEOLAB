@@ -9,6 +9,7 @@ namespace GeoLab2D
     public partial class GeoLab2D
     {
         private Label resumenFigura;
+        private Label coordenadasCursor;
         private CheckBox mostrarAnalisis;
         private SeccionDesplegable seccionColores, seccionTransformacion, seccionVectores, seccionAnalisis;
         private bool configurandoDiseno;
@@ -57,7 +58,7 @@ namespace GeoLab2D
                 Padding = new Padding(10), MaximumSize = new Size(284, 0), MinimumSize = new Size(260, 0) };
             tablaHerramientas.Controls.Add(new SeccionDesplegable("RESULTADOS", resumenFigura), 0, 5);
             tablaHerramientas.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(278, 0),
-                Padding = new Padding(8), Text = "Arrastra una figura para moverla. En análisis, arrastra A, B o P; en vectores, sus extremos." }, 0, 6);
+                Padding = new Padding(8), Text = "Clic: selecciona un sector o pétalo. Arrastra: mueve la figura o los puntos. Coordenadas del cursor al pie." }, 0, 6);
             tablaHerramientas.ResumeLayout(true);
 
             var trabajo = new Panel { Name = "areaTrabajo", Dock = DockStyle.Fill, Padding = new Padding(0, 8, 12, 8) };
@@ -72,6 +73,13 @@ namespace GeoLab2D
             Controls.Add(trabajo);
             contenedorHerramientas.BringToFront();
             trabajo.BringToFront();
+            var pie = new Panel { Dock = DockStyle.Bottom, Height = 44 };
+            estado.Parent = pie;
+            estado.Dock = DockStyle.Fill;
+            coordenadasCursor = new Label { Name = "coordenadasCursor", Text = "Cursor  X: —  Y: —", Dock = DockStyle.Right,
+                Width = 246, TextAlign = ContentAlignment.MiddleRight, Padding = new Padding(0, 0, 12, 0) };
+            pie.Controls.Add(coordenadasCursor);
+            Controls.Add(pie);
             TemaOscuro.Aplicar(this);
             BackColor = TemaOscuro.Fondo;
             encabezado.BackColor = TemaOscuro.Fondo;
@@ -79,6 +87,11 @@ namespace GeoLab2D
             encabezado.Font = TemaOscuro.FuenteCabecera;
             estado.BackColor = TemaOscuro.Fondo;
             estado.ForeColor = TemaOscuro.Secundario;
+            pie.BackColor = TemaOscuro.Fondo;
+            coordenadasCursor.BackColor = TemaOscuro.Fondo;
+            coordenadasCursor.ForeColor = TemaOscuro.Acento;
+            coordenadasCursor.Font = TemaOscuro.FuenteDatos;
+            ayudas.SetToolTip(coordenadasCursor, "Coordenadas cartesianas del lienzo: origen en el centro, +Y hacia arriba. Una unidad equivale a un píxel.");
             contenedorLienzo.BackColor = TemaOscuro.Fondo;
             lienzo.BackColor = TemaOscuro.Lienzo;
             lienzo.ForeColor = TemaOscuro.Texto;
@@ -88,6 +101,21 @@ namespace GeoLab2D
             mostrarAnalisis.CheckedChanged += (sender, e) => ActualizarFigura();
             contenedorLienzo.Resize += (sender, e) => AjustarLienzo();
             lienzo.DesplazamientoSolicitado += (sender, e) => panelTransformaciones.Desplazar(e.X, e.Y);
+            lienzo.PosicionCursorCambiada += (sender, e) =>
+                coordenadasCursor.Text = e.Punto.HasValue
+                    ? string.Format("Cursor  X: {0:0.00}  Y: {1:0.00}", e.Punto.Value.X, e.Punto.Value.Y)
+                    : "Cursor  X: —  Y: —";
+            lienzo.ElementoSeleccionado += (sender, e) =>
+            {
+                panelColores.SeleccionarElemento(e.Figura, e.Elemento);
+                // El clic revela la selección aun si la sección estaba plegada.
+                if (!seccionColores.Expandida) seccionColores.Alternar();
+            };
+            panelColores.SeleccionCambiada += (sender, e) =>
+            {
+                int tipo = selectorFigura.SelectedIndex;
+                if (tipo >= 0 && tipo <= 2) lienzo.SeleccionarElemento(tipo, panelColores.ElementoSeleccionado);
+            };
             lienzo.PuntoMovido += (sender, e) =>
             {
                 if (selectorFigura.SelectedIndex == 3) panelVectores.MoverVector(e.Nombre, e.Punto);

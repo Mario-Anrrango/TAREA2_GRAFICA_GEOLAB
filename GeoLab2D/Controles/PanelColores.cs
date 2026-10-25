@@ -14,6 +14,8 @@ namespace GeoLab2D.Controles
         private readonly Button cambiar;
         private readonly Label mensaje;
         public event EventHandler PaletaCambiada;
+        public event EventHandler SeleccionCambiada;
+        public int ElementoSeleccionado { get { return elemento.SelectedIndex; } }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -35,7 +37,11 @@ namespace GeoLab2D.Controles
             fila.Controls.Add(elemento); fila.Controls.Add(cambiar); fila.Controls.Add(restablecer);
             tabla.Controls.Add(fila, 0, 0); tabla.Controls.Add(mensaje, 0, 1);
             Controls.Add(tabla);
-            elemento.SelectedIndexChanged += (sender, e) => ActualizarMuestra();
+            elemento.SelectedIndexChanged += (sender, e) =>
+            {
+                ActualizarMuestra();
+                if (elemento.SelectedIndex >= 0 && SeleccionCambiada != null) SeleccionCambiada(this, EventArgs.Empty);
+            };
             cambiar.Click += Cambiar_Click;
             restablecer.Click += (sender, e) => RestablecerColores();
             SeleccionarFigura(0);
@@ -64,6 +70,13 @@ namespace GeoLab2D.Controles
             ActualizarMuestra();
             if (PaletaCambiada != null) PaletaCambiada(this, EventArgs.Empty);
             return true;
+        }
+
+        public void SeleccionarElemento(int tipo, int indice)
+        {
+            paleta.ObtenerColor(tipo, indice);
+            SeleccionarFigura(tipo);
+            elemento.SelectedIndex = indice;
         }
 
         public void RestablecerColores()

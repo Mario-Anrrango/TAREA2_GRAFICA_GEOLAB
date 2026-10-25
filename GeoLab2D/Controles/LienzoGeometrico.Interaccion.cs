@@ -6,6 +6,19 @@ using GeoLab2D.Geometria;
 
 namespace GeoLab2D.Controles
 {
+    public sealed class ElementoSeleccionadoEventArgs : EventArgs
+    {
+        public int Figura { get; private set; }
+        public int Elemento { get; private set; }
+        public ElementoSeleccionadoEventArgs(int figura, int elemento) { Figura = figura; Elemento = elemento; }
+    }
+
+    public sealed class PosicionCursorEventArgs : EventArgs
+    {
+        public PointF? Punto { get; private set; }
+        public PosicionCursorEventArgs(PointF? punto) { Punto = punto; }
+    }
+
     public sealed class DesplazamientoEventArgs : EventArgs
     {
         public float X { get; private set; }
@@ -26,9 +39,67 @@ namespace GeoLab2D.Controles
         public bool MostrarEjes { get; set; }
         public event EventHandler<DesplazamientoEventArgs> DesplazamientoSolicitado;
         public event EventHandler<PuntoMovidoEventArgs> PuntoMovido;
+        public event EventHandler<ElementoSeleccionadoEventArgs> ElementoSeleccionado;
+        public event EventHandler<PosicionCursorEventArgs> PosicionCursorCambiada;
         private bool analisisSuperpuesto, arrastrandoFigura;
+        private bool movimientoDetectado;
+        private Point inicioPulsacion;
+        private int figuraSeleccionada = -1, elementoSeleccionado = -1;
         private string puntoActivo;
         private Point ultimaPosicion;
+
+        public void SeleccionarElemento(int figura, int elemento)
+        {
+            paleta.ObtenerColor(figura, elemento);
+            if (figuraSeleccionada == figura && elementoSeleccionado == elemento) return;
+            figuraSeleccionada = figura; elementoSeleccionado = elemento;
+            Invalidate();
+        }
+
+        private PointF[] ContornoElemento(int figura, int elemento)
+        {
+            if (figura == 0 && hexagono != null)
+            {
+                PointF[] vertices = hexagono.ObtenerVertices();
+                return transformacion.Transformar(new[] { PointF.Empty, vertices[elemento], vertices[(elemento + 1) % 6] });
+            }
+            if (figura == 1 && flor != null) return transformacion.Transformar(flor.ObtenerPetalos()[elemento]);
+            return null;
+        }
+
+        private void SeleccionarPorClic(Point punto)
+        {
+            int figura = hexagono != null ? 0 : flor != null ? 1 : estrella != null ? 2 : -1;
+            if (figura < 0) return;
+            if (figura == 2)
+            {
+                if (ElementoSeleccionado != null) ElementoSeleccionado(this, new ElementoSeleccionadoEventArgs(2, 0));
+                return;
+            }
+            PointF posicion = ACoordenadas(punto);
+            for (int i = 0; i < paleta.CantidadElementos(figura); i++)
+            {
+                PointF[] contorno = ContornoElemento(figura, i);
+                if (GeometriaPlana.Ubicar(new[] { contorno }, posicion) == UbicacionPunto.Fuera) continue;
+                SeleccionarElemento(figura, i);
+                if (ElementoSeleccionado != null) ElementoSeleccionado(this, new ElementoSeleccionadoEventArgs(figura, i));
+                break;
+            }
+        }
+
+        private void DibujarSeleccion(Graphics graphics, PointF centro)
+        {
+            if (figuraSeleccionada < 0 || elementoSeleccionado < 0) return;
+            PointF[] contorno = ContornoElemento(figuraSeleccionada, elementoSeleccionado);
+            if (contorno == null) return;
+            PointF[] pantalla = ConvertirAPantalla(contorno, centro);
+            using (var sombra = new Pen(Color.FromArgb(20, 29, 38), 4f))
+            using (var borde = new Pen(Color.FromArgb(228, 246, 255), 1.5f))
+            {
+                graphics.DrawPolygon(sombra, pantalla);
+                graphics.DrawPolygon(borde, pantalla);
+            }
+        }
 
         public void SuperponerAnalisis(PointF a, PointF b, PointF p)
         {
@@ -103,6 +174,8 @@ namespace GeoLab2D.Controles
         {
             base.OnMouseDown(e);
             if (e.Button != MouseButtons.Left) return;
+            inicioPulsacion = e.Location;
+            movimientoDetectado = false;
             puntoActivo = EncontrarPunto(e.Location);
             arrastrandoFigura = puntoActivo == null && TocaFigura(e.Location);
             ultimaPosicion = e.Location;
@@ -112,8 +185,17 @@ namespace GeoLab2D.Controles
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            if (PosicionCursorCambiada != null)
+                PosicionCursorCambiada(this, new PosicionCursorEventArgs(ACoordenadas(e.Location)));
             if (e.Button == MouseButtons.Left)
             {
+                if (!movimientoDetectado)
+                {
+                    Size umbral = SystemInformation.DragSize;
+                    movimientoDetectado = Math.Abs(e.X - inicioPulsacion.X) >= Math.Max(2, umbral.Width / 2) ||
+                        Math.Abs(e.Y - inicioPulsacion.Y) >= Math.Max(2, umbral.Height / 2);
+                    if (!movimientoDetectado) return;
+                }
                 if (puntoActivo != null && PuntoMovido != null)
                     PuntoMovido(this, new PuntoMovidoEventArgs(puntoActivo, ACoordenadas(e.Location)));
                 else if (arrastrandoFigura && DesplazamientoSolicitado != null)
@@ -126,7 +208,17 @@ namespace GeoLab2D.Controles
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            if (e.Button == MouseButtons.Left && !movimientoDetectado && puntoActivo == null && arrastrandoFigura)
+                SeleccionarPorClic(e.Location);
             puntoActivo = null; arrastrandoFigura = false; Capture = false; Cursor = Cursors.Default;
+            if (!ClientRectangle.Contains(e.Location) && PosicionCursorCambiada != null)
+                PosicionCursorCambiada(this, new PosicionCursorEventArgs(null));
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            if (!Capture && PosicionCursorCambiada != null) PosicionCursorCambiada(this, new PosicionCursorEventArgs(null));
         }
     }
 }

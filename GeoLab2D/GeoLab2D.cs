@@ -217,6 +217,8 @@ namespace GeoLab2D
                 panelAnalisis.MostrarResultados(contornosActuales, esEstrella);
                 lienzo.SuperponerAnalisis(panelAnalisis.A, panelAnalisis.B, panelAnalisis.P);
             }
+            if (selectorFigura.SelectedIndex <= 2)
+                lienzo.SeleccionarElemento(selectorFigura.SelectedIndex, panelColores.ElementoSeleccionado);
             resumenFigura.Text = estado.Text.Split(new[] { "\r\n" }, StringSplitOptions.None)[0].Replace(" | ", "\r\n");
             AjustarHerramientas();
         }
