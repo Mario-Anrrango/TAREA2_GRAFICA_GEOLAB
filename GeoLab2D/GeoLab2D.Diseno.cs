@@ -17,7 +17,7 @@ namespace GeoLab2D
         {
             configurandoDiseno = true;
             SuspendLayout();
-            Font = new Font("Segoe UI", 9F);
+            Font = TemaOscuro.FuenteTexto;
             BackColor = TemaOscuro.Fondo;
             ForeColor = TemaOscuro.Texto;
             ClientSize = new Size(1240, 800);
@@ -76,6 +76,7 @@ namespace GeoLab2D
             BackColor = TemaOscuro.Fondo;
             encabezado.BackColor = TemaOscuro.Fondo;
             encabezado.ForeColor = TemaOscuro.Acento;
+            encabezado.Font = TemaOscuro.FuenteCabecera;
             estado.BackColor = TemaOscuro.Fondo;
             estado.ForeColor = TemaOscuro.Secundario;
             contenedorLienzo.BackColor = TemaOscuro.Fondo;

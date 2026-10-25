@@ -64,6 +64,9 @@
     <Compile Include="Geometria\Matriz3x3.cs" />
     <Compile Include="Presentacion\PaletaFiguras.cs" />
     <Compile Include="Presentacion\TemaOscuro.cs" />
+    <Compile Include="Controles\BotonRedondeado.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="GeoLab2D.Diseno.cs">
       <DependentUpon>GeoLab2D.cs</DependentUpon>
     </Compile>

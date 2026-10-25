@@ -126,11 +126,14 @@ namespace GeoLab2D
             seccionVectores.Mostrar(esVectores);
             seccionAnalisis.Mostrar(esAnalisis || superponer);
             lado.Enabled = !esVectores;
-            etiquetaLado.Enabled = !esVectores;
+            etiquetaLado.Enabled = true;
+            etiquetaLado.ForeColor = esVectores ? Presentacion.TemaOscuro.Secundario : Presentacion.TemaOscuro.Texto;
             puntas.Enabled = esEstrella;
             salto.Enabled = esEstrella;
-            etiquetaPuntas.Enabled = esEstrella;
-            etiquetaSalto.Enabled = esEstrella;
+            etiquetaPuntas.Enabled = true;
+            etiquetaSalto.Enabled = true;
+            etiquetaPuntas.ForeColor = esEstrella ? Presentacion.TemaOscuro.Texto : Presentacion.TemaOscuro.Secundario;
+            etiquetaSalto.ForeColor = etiquetaPuntas.ForeColor;
             if (esEstrella)
             {
                 int maximo = ((int)puntas.Value - 1) / 2;

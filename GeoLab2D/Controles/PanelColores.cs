@@ -29,8 +29,8 @@ namespace GeoLab2D.Controles
             var fila = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, WrapContents = true };
             fila.Controls.Add(new Label { Text = "Colores:", AutoSize = true, Margin = new Padding(0, 5, 6, 0) });
             elemento = new ComboBox { Name = "elementoColor", DropDownStyle = ComboBoxStyle.DropDownList, Width = 135 };
-            cambiar = new Button { Name = "cambiarColor", Text = "Cambiar color…", AutoSize = true, UseVisualStyleBackColor = false };
-            var restablecer = new Button { Name = "restablecerColores", Text = "Restablecer colores", AutoSize = true };
+            cambiar = new BotonRedondeado { Name = "cambiarColor", Text = "Cambiar color…", AutoSize = true, UseVisualStyleBackColor = false };
+            var restablecer = new BotonRedondeado { Name = "restablecerColores", Text = "Restablecer colores", AutoSize = true };
             mensaje = new Label { Name = "mensajeColor", AutoSize = true, Dock = DockStyle.Fill };
             fila.Controls.Add(elemento); fila.Controls.Add(cambiar); fila.Controls.Add(restablecer);
             tabla.Controls.Add(fila, 0, 0); tabla.Controls.Add(mensaje, 0, 1);

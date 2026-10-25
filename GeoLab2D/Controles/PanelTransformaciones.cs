@@ -35,7 +35,7 @@ namespace GeoLab2D.Controles
             angulo = Agregar(entradas, "Ángulo (°)", "angulo", -360, 360, 0, 1);
             sx = Agregar(entradas, "Sx", "escalaX", 0.1m, 3, 1, 0.1m);
             sy = Agregar(entradas, "Sy", "escalaY", 0.1m, 3, 1, 0.1m);
-            var restablecer = new Button { Name = "restablecerTransformacion", Text = "Restablecer", AutoSize = true };
+            var restablecer = new BotonRedondeado { Name = "restablecerTransformacion", Text = "Restablecer", AutoSize = true };
             restablecer.Click += Restablecer_Click;
             entradas.Controls.Add(restablecer);
             matrizTexto = new Label { Name = "matrizTransformacion", AutoSize = true, Dock = DockStyle.Fill };
@@ -84,7 +84,7 @@ namespace GeoLab2D.Controles
         {
             Matriz3x3 m = Matriz;
             matrizTexto.Text = string.Format(
-                "M: [{0:0.000}; {1:0.000}; {2:0.00}]  [{3:0.000}; {4:0.000}; {5:0.00}]  [0; 0; 1]",
+                "M  [{0:0.000}; {1:0.000}; {2:0.00}]\r\n   [{3:0.000}; {4:0.000}; {5:0.00}]\r\n   [0; 0; 1]",
                 m[0, 0], m[0, 1], m[0, 2], m[1, 0], m[1, 1], m[1, 2]);
         }
 
