@@ -22,6 +22,7 @@ internal static class VerificarHexagono
     {
         try
         {
+            var tiempo = System.Diagnostics.Stopwatch.StartNew();
             foreach (float lado in new float[] { 1f, 10f, 150f, 280f })
             {
                 var figura = new HexagonoRegular(lado);
@@ -92,6 +93,8 @@ internal static class VerificarHexagono
             VerificarMatrices.Ejecutar();
             VerificarInteraccion.Ejecutar();
             VerificarDiseno.Ejecutar();
+            ResumenValidacion.Guardar();
+            Console.WriteLine("RESULTADO FINAL: APROBADO. Duracion: " + tiempo.Elapsed.TotalSeconds.ToString("0.00") + " segundos.");
             return 0;
         }
         catch (Exception error)

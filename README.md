@@ -3,7 +3,7 @@
 Aplicación de escritorio para la tarea de Computación Gráfica, desarrollada
 en C# con Windows Forms y .NET Framework 4.7.2.
 
-## Avance actual: etapa 8
+## Avance actual: etapa 9
 
 - Referencias del proyecto y punto de entrada corregidos para el formulario `GeoLab2D`.
 - Lienzo de al menos 800 × 600 píxeles, con doble búfer.
@@ -29,6 +29,8 @@ en C# con Windows Forms y .NET Framework 4.7.2.
 La selección y su demostración para el video se explican en
 [Interacción en el lienzo](docs/Interaccion-Lienzo.md).
 
+El informe cierra con la [declaración de uso de IA y bibliografía del material de la Unidad 1](docs/Declaracion_IA_y_Bibliografia.md).
+
 Las fórmulas, responsabilidades y casos de prueba están en
 [la documentación del hexágono](docs/Etapa2-Hexagono.md) y
 [la documentación de la margarita](docs/Etapa3-Margarita.md) y
@@ -37,8 +39,32 @@ Las fórmulas, responsabilidades y casos de prueba están en
 [la documentación del análisis geométrico](docs/Etapa6-Geometria.md) y
 [la documentación de matrices](docs/Etapa7-Matrices.md) y
 [la documentación de interacción](docs/Etapa8-Interaccion.md).
-Queda pendiente consolidar los entregables finales y realizar la revisión manual
-del diálogo de colores, el foco y el diseñador de Visual Studio.
+El informe consolidado está en [docs/InformeTecnico.md](docs/InformeTecnico.md)
+y en [PDF con carátula y procedimientos](output/pdf/Informe_Tecnico_GeoLab2D_Anrrango_Benavides_Mario_Santiago.pdf). El guion de video de 4:40 está
+en [docs/Guion_Video.md](docs/Guion_Video.md). La grabación y la revisión manual
+del diálogo de colores, el foco y el diseñador se realizan antes del envío.
+
+## Entrega final
+
+- [Paquete completo](entrega/GeoLab2D_Entrega.zip): código, ejecutable, informe, guion y evidencias.
+- [Ejecutable Release](entrega/GeoLab2D_Ejecutable.zip): extraer y ejecutar en Windows con .NET Framework 4.7.2 o compatible.
+- [Código fuente](entrega/GeoLab2D_CodigoFuente.zip): proyecto, pruebas, documentación y scripts.
+- [Instrucciones de entrega](entrega/LEEME_ENTREGA.md) y [evidencias de validación](entrega/evidencias/pruebas-release.txt).
+
+Las pruebas Release recorren todas las combinaciones válidas de puntas y salto
+desde 5 hasta 64 puntas con tres radios: **2790 casos de estrellas**.
+Se incluyen **16 casos numéricos conocidos**, exportados con valores esperados,
+obtenidos y tolerancias en `entrega/evidencias/casos-referencia.csv`.
+El video no está grabado en el paquete; se proporciona su guion cronometrado.
+
+Para regenerar la entrega:
+
+1. Ejecutar `tools/Validar-Entrega.ps1` con MSBuild disponible o indicando `-MSBuildPath`.
+2. Ejecutar `tools/Generar-Informe.py` con Python y ReportLab para actualizar el PDF desde el Markdown y el CSV.
+3. Ejecutar `tools/Personalizar-Informe.py` para incorporar la carátula y el anexo de siete capturas históricas.
+4. Ejecutar `tools/Empaquetar-Entrega.ps1` para generar los ZIP y sus hashes SHA256.
+
+La aplicación y sus pruebas no requieren Python; solo la regeneración del informe.
 
 ## Ejecutar
 
@@ -65,8 +91,8 @@ Los commits deben reflejar cambios realmente realizados y comprobados.
 | 5 (completada) | Magnitud, dirección, producto punto y determinante de vectores | `Implementa operaciones vectoriales` |
 | 6 (completada) | Áreas, perímetros, orientación, pertenencia y proyección sobre segmentos | `Agrega analisis geometrico y proyecciones` |
 | 7 (completada) | Traslación, rotación y escalamiento mediante matrices homogéneas | `Implementa transformaciones matriciales 2D` |
-| 8 (actual) | Integrar edición de posición, colores y ángulos; completar validaciones | `Completa controles interactivos y validaciones` |
-| 9 | Consolidar casos de prueba, informe con fórmulas y guion de video de hasta cinco minutos | `Documenta fundamentos y pruebas de GeoLab2D` |
+| 8 (completada) | Integrar edición de posición, colores y ángulos; completar validaciones | `Completa controles interactivos y validaciones` |
+| 9 (actual) | Consolidar casos de prueba, informe con fórmulas y guion de video de hasta cinco minutos | `Documenta fundamentos y pruebas de GeoLab2D` |
 
 En cada etapa matemática se documentarán las fórmulas y se comprobarán casos
 con resultados conocidos; la etapa 9 consolida esas evidencias.
@@ -74,7 +100,7 @@ con resultados conocidos; la etapa 9 consolida esas evidencias.
 ## Comprobación manual de la etapa 1
 
 1. Ejecutar la aplicación: debe abrirse el formulario GeoLab2D sin errores.
-2. Comprobar que se muestra la superficie blanca y el estado de la etapa actual.
+2. Comprobar que se muestra el lienzo con el tema actual y el estado de la figura.
 3. Reducir la ventana: deben aparecer barras de desplazamiento sin reducir
    el lienzo por debajo de 800 × 600.
 4. Maximizar, minimizar y restaurar: el lienzo debe conservarse y repintarse.
@@ -103,7 +129,7 @@ Compilar `Pruebas/GeoLab2D.Pruebas.csproj` y ejecutar
 perímetro, entradas inválidas, actualización desde la interfaz y seis colores.
 También se verifican la simetría de la flor, la inscripción de los pentágonos,
 sus áreas, los cinco rellenos rojos, el hueco y la selección de figura.
-Para las estrellas se verifican todos los saltos de 5 a 32 puntas con tres radios,
+Para las estrellas se verifican todos los saltos de 5 a 64 puntas con tres radios,
 los recorridos cerrados, las componentes, la simetría, las longitudes y los controles.
 Se añaden casos vectoriales conocidos, cuadrantes, entradas inválidas, vector cero,
 actualización de los resultados y flechas, y regreso a una estrella de 64 puntas.
@@ -121,8 +147,8 @@ Después de revisar y compilar, desde la raíz del repositorio:
 
 ```powershell
 git diff
-git add README.md GeoLab2D/GeoLab2D.csproj GeoLab2D/GeoLab2D.cs GeoLab2D/GeoLab2D.Designer.cs GeoLab2D/Controles/LienzoGeometrico.cs GeoLab2D/Controles/PanelColores.cs GeoLab2D/Controles/EntradaNumericaValidada.cs GeoLab2D/Controles/PanelAnalisis.cs GeoLab2D/Controles/PanelVectores.cs GeoLab2D/Controles/PanelTransformaciones.cs GeoLab2D/Presentacion/PaletaFiguras.cs Pruebas/GeoLab2D.Pruebas.csproj Pruebas/VerificarHexagono.cs Pruebas/VerificarInteraccion.cs docs/Etapa8-Interaccion.md
-git commit -m "Completa controles interactivos y validaciones"
+git add README.md Pruebas/GeoLab2D.Pruebas.csproj Pruebas/VerificarHexagono.cs Pruebas/VerificarEstrella.cs Pruebas/ResumenValidacion.cs docs tools entrega output/pdf
+git commit -m "Documenta fundamentos y pruebas de GeoLab2D"
 git push
 ```
 

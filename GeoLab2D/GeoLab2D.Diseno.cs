@@ -13,6 +13,7 @@ namespace GeoLab2D
         private CheckBox mostrarAnalisis;
         private SeccionDesplegable seccionColores, seccionTransformacion, seccionVectores, seccionAnalisis;
         private bool configurandoDiseno;
+        private ToolStripDropDown guiaInteraccion;
 
         private void ConfigurarDiseno()
         {
@@ -32,8 +33,8 @@ namespace GeoLab2D
             tablaHerramientas.SuspendLayout();
             tablaHerramientas.Controls.Clear();
             tablaHerramientas.RowStyles.Clear();
-            tablaHerramientas.RowCount = 7;
-            for (int i = 0; i < 7; i++) tablaHerramientas.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tablaHerramientas.RowCount = 6;
+            for (int i = 0; i < 6; i++) tablaHerramientas.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             parametros.Controls.Clear();
             parametros.Padding = new Padding(10, 6, 10, 10);
             parametros.FlowDirection = FlowDirection.TopDown;
@@ -57,9 +58,18 @@ namespace GeoLab2D
             resumenFigura = new Label { Name = "resumenFigura", AutoSize = true, Dock = DockStyle.Top,
                 Padding = new Padding(10), MaximumSize = new Size(284, 0), MinimumSize = new Size(260, 0) };
             tablaHerramientas.Controls.Add(new SeccionDesplegable("RESULTADOS", resumenFigura), 0, 5);
-            tablaHerramientas.Controls.Add(new TextoResultados { MaximumSize = new Size(278, 0),
-                Padding = new Padding(8), Text = "[Cómo interactuar]\r\nClic: selecciona un sector o pétalo.\r\n\r\nArrastre: mueve la figura o los puntos.\r\n\r\nCursor: consulta sus coordenadas al pie." }, 0, 6);
             tablaHerramientas.ResumeLayout(true);
+
+            var cabecera = new Panel { Name = "cabeceraAplicacion", Dock = DockStyle.Top, Height = 48 };
+            encabezado.Parent = cabecera;
+            encabezado.Dock = DockStyle.Fill;
+            var espacioAyuda = new Panel { Dock = DockStyle.Right, Width = 198, Padding = new Padding(8, 7, 16, 7) };
+            var botonAyuda = new BotonRedondeado { Name = "ayudaInteraccion", Text = "?  Cómo interactuar", Dock = DockStyle.Fill,
+                AccessibleDescription = "Abre una guía de selección, arrastre, puntos y coordenadas." };
+            botonAyuda.Click += (sender, e) => MostrarGuiaInteraccion(botonAyuda);
+            espacioAyuda.Controls.Add(botonAyuda);
+            cabecera.Controls.Add(espacioAyuda);
+            Controls.Add(cabecera);
 
             var trabajo = new Panel { Name = "areaTrabajo", Dock = DockStyle.Fill, Padding = new Padding(0, 8, 12, 8) };
             var barra = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 40, Padding = new Padding(10, 4, 0, 0) };
@@ -83,6 +93,9 @@ namespace GeoLab2D
             TemaOscuro.Aplicar(this);
             BackColor = TemaOscuro.Fondo;
             encabezado.BackColor = TemaOscuro.Fondo;
+            cabecera.BackColor = TemaOscuro.Fondo;
+            espacioAyuda.BackColor = TemaOscuro.Fondo;
+            ayudas.SetToolTip(botonAyuda, "Abre la guía de selección, arrastre y coordenadas.");
             encabezado.ForeColor = TemaOscuro.Acento;
             encabezado.Font = TemaOscuro.FuenteCabecera;
             estado.BackColor = TemaOscuro.Fondo;
@@ -134,6 +147,44 @@ namespace GeoLab2D
             numero.Width = 86;
             fila.Controls.Add(etiqueta); fila.Controls.Add(numero);
             return fila;
+        }
+
+        private void MostrarGuiaInteraccion(Control boton)
+        {
+            if (guiaInteraccion != null && guiaInteraccion.Visible)
+            {
+                guiaInteraccion.Close();
+                return;
+            }
+            if (guiaInteraccion == null)
+            {
+                var texto = new TextoResultados
+                {
+                    Text = "[Seleccionar colores]\r\nHaz clic en un sector o pétalo y pulsa Cambiar color."
+                        + "\r\n\r\n[Mover figuras]\r\nArrastra la figura para cambiar su posición."
+                        + "\r\n\r\n[Vectores y puntos]\r\nArrastra los extremos de los vectores o los marcadores A, B y P."
+                        + "\r\n\r\n[Coordenadas del cursor]\r\nConsulta X e Y al pie del lienzo. El origen está en el centro y +Y apunta hacia arriba."
+                        + "\r\n\r\n[Cerrar esta guía]\r\nHaz clic fuera o pulsa Escape.",
+                    MaximumSize = new Size(350, 0)
+                };
+                TemaOscuro.Aplicar(texto);
+                int altoTexto = texto.GetPreferredSize(new Size(350, 0)).Height;
+                var panel = new Panel
+                {
+                    AutoScroll = true, BackColor = TemaOscuro.Panel,
+                    Size = new Size(390, Math.Min(altoTexto + 24, Math.Max(220, Screen.FromControl(boton).WorkingArea.Height / 2)))
+                };
+                texto.AutoSize = false;
+                texto.SetBounds(12, 12, 350, altoTexto);
+                panel.Controls.Add(texto);
+                guiaInteraccion = new ToolStripDropDown { AutoClose = true, Padding = Padding.Empty, DropShadowEnabled = true };
+                guiaInteraccion.Items.Add(new ToolStripControlHost(panel)
+                {
+                    AutoSize = false, Size = panel.Size, Margin = Padding.Empty, Padding = Padding.Empty
+                });
+                components.Add(guiaInteraccion);
+            }
+            guiaInteraccion.Show(boton, new Point(boton.Width - guiaInteraccion.PreferredSize.Width, boton.Height + 6));
         }
 
         private void AjustarLienzo()

@@ -27,7 +27,7 @@ internal static class VerificarEstrella
     public static void Ejecutar()
     {
         int casos = 0;
-        for (int n = 5; n <= 32; n++)
+        for (int n = 5; n <= 64; n++)
         for (int k = 2; k <= (n - 1) / 2; k++)
         foreach (float radio in new float[] { 1, 150.5f, 280 })
         {
@@ -112,8 +112,8 @@ internal static class VerificarEstrella
                 if (pixeles < 1000) throw new Exception("No se renderizaron los trazos de la estrella.");
                 imagen.Save(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "estrella-verificada.png"));
             }
-            puntas.Value = 32;
-            salto.Value = 15;
+            puntas.Value = 64;
+            salto.Value = 31;
             puntas.Value = 5;
             Cerca(salto.Value == 2 ? 2 : -1, 2, 0, "Ajuste de salto al reducir puntas");
             Cerca(lienzo.Estrella.Puntas, 5, 0, "Reducción de puntas");

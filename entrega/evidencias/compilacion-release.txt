@@ -1,0 +1,3 @@
+
+  GeoLab2D -> C:\Users\Lenovo\Desktop\GRÁFICA\PRIMER_PARCIAL\Tarea2_GeoLab2D\TAREA2_GRAFICA_GEOLAB\GeoLab2D\bin\Release\GeoLab2D.exe
+  GeoLab2D.Pruebas -> C:\Users\Lenovo\Desktop\GRÁFICA\PRIMER_PARCIAL\Tarea2_GeoLab2D\TAREA2_GRAFICA_GEOLAB\Pruebas\bin\Release\GeoLab2D.Pruebas.exe
