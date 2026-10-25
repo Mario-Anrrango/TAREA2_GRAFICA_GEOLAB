@@ -14,6 +14,20 @@ namespace GeoLab2D.Controles
 
         public Vector2D VectorA { get { return new Vector2D((float)ax.Value, (float)ay.Value); } }
         public Vector2D VectorB { get { return new Vector2D((float)bx.Value, (float)by.Value); } }
+        private bool moviendo;
+
+        public void MoverVector(string nombre, PointF punto)
+        {
+            NumericUpDown x = nombre == "A" ? ax : bx, y = nombre == "A" ? ay : by;
+            moviendo = true;
+            try
+            {
+                x.Value = Math.Max(x.Minimum, Math.Min(x.Maximum, (decimal)punto.X));
+                y.Value = Math.Max(y.Minimum, Math.Min(y.Maximum, (decimal)punto.Y));
+            }
+            finally { moviendo = false; }
+            Entrada_ValueChanged(this, EventArgs.Empty);
+        }
 
         public PanelVectores()
         {
@@ -78,6 +92,7 @@ namespace GeoLab2D.Controles
 
         private void Entrada_ValueChanged(object sender, EventArgs e)
         {
+            if (moviendo) return;
             ActualizarResultados();
             if (VectoresCambiados != null) VectoresCambiados(this, EventArgs.Empty);
         }

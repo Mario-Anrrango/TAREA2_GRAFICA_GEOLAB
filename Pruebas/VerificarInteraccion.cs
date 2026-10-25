@@ -118,8 +118,8 @@ internal static class VerificarInteraccion
             formulario.PerformLayout();
             var herramientas = formulario.Controls.Find("contenedorHerramientas", true)[0];
             var vista = formulario.Controls.Find("contenedorLienzo", true)[0];
-            Exigir(herramientas.Height <= formulario.ClientSize.Height / 2 && vista.Height > 50,
-                "Las herramientas ocultan completamente el lienzo.");
+            Exigir(herramientas.Dock == DockStyle.Left && vista.Height > 50 && vista.Width > 50,
+                "La barra lateral oculta completamente el lienzo.");
             Exigir(lienzo.Width >= 800 && lienzo.Height >= 600, "Se redujo el lienzo mínimo.");
             selector.SelectedIndex = 0;
             formulario.ClientSize = new Size(850, 794);

@@ -87,7 +87,7 @@ internal static class VerificarMargarita
             {
                 lienzo.DrawToBitmap(imagen, lienzo.ClientRectangle);
                 int x = lienzo.Width / 2, y = lienzo.Height / 2;
-                if (imagen.GetPixel(x, y).ToArgb() != Color.White.ToArgb()) throw new Exception("El centro debe quedar vacío.");
+                if (imagen.GetPixel(x, y).ToArgb() == Color.Red.ToArgb()) throw new Exception("El centro no debe tener relleno de pétalo.");
                 foreach (PointF[] petalo in lienzo.Flor.ObtenerPetalos())
                 {
                     double cx = 0, cy = 0;

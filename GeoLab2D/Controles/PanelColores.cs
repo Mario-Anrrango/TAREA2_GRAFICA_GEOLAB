@@ -58,7 +58,7 @@ namespace GeoLab2D.Controles
             catch (ArgumentException error)
             {
                 mensaje.Text = error.Message;
-                mensaje.ForeColor = Color.Firebrick;
+                mensaje.ForeColor = Color.Salmon;
                 return false;
             }
             ActualizarMuestra();
@@ -79,7 +79,7 @@ namespace GeoLab2D.Controles
             Color color = paleta.ObtenerColor(figura, elemento.SelectedIndex);
             cambiar.BackColor = color;
             cambiar.ForeColor = 0.299 * color.R + 0.587 * color.G + 0.114 * color.B < 140 ? Color.White : Color.Black;
-            mensaje.ForeColor = SystemColors.ControlText;
+            mensaje.ForeColor = TemaOscuro.Secundario;
             mensaje.Text = string.Format("RGB ({0}; {1}; {2}) | Los colores se conservan durante esta sesión.", color.R, color.G, color.B);
         }
 

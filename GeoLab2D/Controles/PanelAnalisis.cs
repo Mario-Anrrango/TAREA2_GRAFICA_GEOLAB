@@ -15,6 +15,24 @@ namespace GeoLab2D.Controles
         public PointF A { get { return new PointF((float)ax.Value, (float)ay.Value); } }
         public PointF B { get { return new PointF((float)bx.Value, (float)by.Value); } }
         public PointF P { get { return new PointF((float)px.Value, (float)py.Value); } }
+        private bool moviendo;
+
+        public void PermitirSeleccion(bool permitir) { figura.Enabled = permitir; }
+        public void SeleccionarFigura(int tipo) { figura.SelectedIndex = tipo; }
+
+        public void MoverPunto(string nombre, PointF punto)
+        {
+            NumericUpDown x = nombre == "A" ? ax : nombre == "B" ? bx : px;
+            NumericUpDown y = nombre == "A" ? ay : nombre == "B" ? by : py;
+            moviendo = true;
+            try
+            {
+                x.Value = Math.Max(x.Minimum, Math.Min(x.Maximum, (decimal)punto.X));
+                y.Value = Math.Max(y.Minimum, Math.Min(y.Maximum, (decimal)punto.Y));
+            }
+            finally { moviendo = false; }
+            Entrada_Cambiada(this, EventArgs.Empty);
+        }
 
         public PanelAnalisis()
         {
@@ -74,6 +92,7 @@ namespace GeoLab2D.Controles
 
         private void Entrada_Cambiada(object sender, EventArgs e)
         {
+            if (moviendo) return;
             if (DatosCambiados != null) DatosCambiados(this, EventArgs.Empty);
         }
     }

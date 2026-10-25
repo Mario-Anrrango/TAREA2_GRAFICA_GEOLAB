@@ -10,7 +10,7 @@ namespace GeoLab2D.Controles
     /// <summary>
     /// Presenta el modelo matemático sin calcular sus vértices en el formulario.
     /// </summary>
-    public class LienzoGeometrico : Panel
+    public partial class LienzoGeometrico : Panel
     {
         private HexagonoRegular hexagono;
         private FlorMargarita flor;
@@ -52,7 +52,7 @@ namespace GeoLab2D.Controles
         public HexagonoRegular Hexagono
         {
             get { return hexagono; }
-            set { hexagono = value; flor = null; estrella = null; vectorA = vectorB = null; contornosAnalisis = null; Invalidate(); }
+            set { hexagono = value; flor = null; estrella = null; vectorA = vectorB = null; contornosAnalisis = null; analisisSuperpuesto = false; Invalidate(); }
         }
 
         [Browsable(false)]
@@ -60,7 +60,7 @@ namespace GeoLab2D.Controles
         public FlorMargarita Flor
         {
             get { return flor; }
-            set { flor = value; hexagono = null; estrella = null; vectorA = vectorB = null; contornosAnalisis = null; Invalidate(); }
+            set { flor = value; hexagono = null; estrella = null; vectorA = vectorB = null; contornosAnalisis = null; analisisSuperpuesto = false; Invalidate(); }
         }
 
         [Browsable(false)]
@@ -68,7 +68,7 @@ namespace GeoLab2D.Controles
         public PoligonoEstrellado Estrella
         {
             get { return estrella; }
-            set { estrella = value; hexagono = null; flor = null; vectorA = vectorB = null; contornosAnalisis = null; Invalidate(); }
+            set { estrella = value; hexagono = null; flor = null; vectorA = vectorB = null; contornosAnalisis = null; analisisSuperpuesto = false; Invalidate(); }
         }
 
         public void MostrarVectores(Vector2D a, Vector2D b)
@@ -81,6 +81,7 @@ namespace GeoLab2D.Controles
             flor = null;
             estrella = null;
             contornosAnalisis = null;
+            analisisSuperpuesto = false;
             Invalidate();
         }
 
@@ -91,6 +92,7 @@ namespace GeoLab2D.Controles
             var copia = new PointF[contornos.Length][];
             for (int i = 0; i < contornos.Length; i++) copia[i] = (PointF[])contornos[i].Clone();
             contornosAnalisis = copia;
+            analisisSuperpuesto = false;
             analisisA = a; analisisB = b; analisisP = p; analisisQ = proyeccion.Punto;
             hexagono = null; flor = null; estrella = null; vectorA = vectorB = null;
             Invalidate();
@@ -121,6 +123,7 @@ namespace GeoLab2D.Controles
             {
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                 PointF centro = new PointF(ClientSize.Width / 2f, ClientSize.Height / 2f);
+                DibujarReferencia(e.Graphics, centro);
                 if (contornosAnalisis != null)
                 {
                     DibujarAnalisis(e.Graphics, centro);
@@ -128,14 +131,6 @@ namespace GeoLab2D.Controles
                 }
                 if (vectorA != null)
                 {
-                    using (var ejes = new Pen(Color.LightGray, 1f))
-                    {
-                        e.Graphics.DrawLine(ejes, 16, centro.Y, ClientSize.Width - 16, centro.Y);
-                        e.Graphics.DrawLine(ejes, centro.X, 16, centro.X, ClientSize.Height - 16);
-                    }
-                    e.Graphics.DrawString("+X", Font, Brushes.DimGray, ClientSize.Width - 40, centro.Y + 6);
-                    e.Graphics.DrawString("+Y", Font, Brushes.DimGray, centro.X + 6, 16);
-                    e.Graphics.DrawString("O", Font, Brushes.DimGray, centro.X - 18, centro.Y + 6);
                     DibujarVector(e.Graphics, centro, vectorA, Color.RoyalBlue, "A");
                     DibujarVector(e.Graphics, centro, vectorB, Color.DarkOrange, "B");
                     return;
@@ -183,6 +178,8 @@ namespace GeoLab2D.Controles
             }
             finally
             {
+                if (analisisSuperpuesto)
+                    DibujarPuntosAnalisis(e.Graphics, new PointF(ClientSize.Width / 2f, ClientSize.Height / 2f));
                 e.Graphics.Restore(estado);
             }
         }
@@ -203,18 +200,20 @@ namespace GeoLab2D.Controles
 
         private void DibujarAnalisis(Graphics graphics, PointF centro)
         {
-            using (var ejes = new Pen(Color.LightGray, 1f))
             using (var trayectoria = new GraphicsPath(FillMode.Alternate))
             using (var relleno = new SolidBrush(Color.FromArgb(35, Color.SteelBlue)))
             using (var borde = new Pen(Color.SlateGray, 1.5f))
             {
-                graphics.DrawLine(ejes, 16, centro.Y, ClientSize.Width - 16, centro.Y);
-                graphics.DrawLine(ejes, centro.X, 16, centro.X, ClientSize.Height - 16);
                 foreach (PointF[] contorno in contornosAnalisis)
                     trayectoria.AddPolygon(ConvertirAPantalla(contorno, centro));
                 graphics.FillPath(relleno, trayectoria);
                 graphics.DrawPath(borde, trayectoria);
             }
+            DibujarPuntosAnalisis(graphics, centro);
+        }
+
+        private void DibujarPuntosAnalisis(Graphics graphics, PointF centro)
+        {
             PointF[] puntos = ConvertirAPantalla(new[] { analisisA, analisisB, analisisP, analisisQ }, centro);
             using (var segmento = new Pen(Color.RoyalBlue, 2.5f))
             using (var distancia = new Pen(Color.ForestGreen, 1.5f))
@@ -227,8 +226,6 @@ namespace GeoLab2D.Controles
             DibujarPunto(graphics, puntos[1], Color.RoyalBlue, "B", 8, 8);
             DibujarPunto(graphics, puntos[2], Color.DarkOrange, "P", 8, -20);
             DibujarPunto(graphics, puntos[3], Color.ForestGreen, "Q", 8, 8);
-            graphics.DrawString("+X", Font, Brushes.DimGray, ClientSize.Width - 40, centro.Y + 6);
-            graphics.DrawString("+Y", Font, Brushes.DimGray, centro.X + 6, 16);
         }
 
         private void DibujarPunto(Graphics graphics, PointF punto, Color color, string nombre, float dx, float dy)

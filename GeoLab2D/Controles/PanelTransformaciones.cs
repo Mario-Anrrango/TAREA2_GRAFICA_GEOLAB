@@ -68,6 +68,18 @@ namespace GeoLab2D.Controles
                 : "Figura completa dentro del lienzo.";
         }
 
+        public void Desplazar(float x, float y)
+        {
+            restableciendo = true;
+            try
+            {
+                tx.Value = Math.Max(tx.Minimum, Math.Min(tx.Maximum, tx.Value + (decimal)x));
+                ty.Value = Math.Max(ty.Minimum, Math.Min(ty.Maximum, ty.Value + (decimal)y));
+            }
+            finally { restableciendo = false; }
+            Entrada_Cambiada(this, EventArgs.Empty);
+        }
+
         private void ActualizarMatriz()
         {
             Matriz3x3 m = Matriz;

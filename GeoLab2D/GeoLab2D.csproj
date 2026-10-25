@@ -63,6 +63,16 @@
     <Compile Include="Geometria\GeometriaPlana.cs" />
     <Compile Include="Geometria\Matriz3x3.cs" />
     <Compile Include="Presentacion\PaletaFiguras.cs" />
+    <Compile Include="Presentacion\TemaOscuro.cs" />
+    <Compile Include="GeoLab2D.Diseno.cs">
+      <DependentUpon>GeoLab2D.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controles\SeccionDesplegable.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controles\LienzoGeometrico.Interaccion.cs">
+      <DependentUpon>LienzoGeometrico.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controles\EntradaNumericaValidada.cs">
       <SubType>Component</SubType>
     </Compile>

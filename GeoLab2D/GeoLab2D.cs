@@ -12,6 +12,7 @@ namespace GeoLab2D
         public GeoLab2D()
         {
             InitializeComponent();
+            ConfigurarDiseno();
             ConfigurarEntradas(this);
             ayudas.SetToolTip(puntas, "De 5 a 64 puntas. El salto máximo depende de las puntas actuales.");
             ayudas.SetToolTip(salto, "Salto entre vértices: de 2 a la parte entera de (N - 1) / 2.");
@@ -38,12 +39,12 @@ namespace GeoLab2D
 
         private void AjustarHerramientas()
         {
-            if (ajustandoHerramientas) return;
+            if (ajustandoHerramientas || configurandoDiseno) return;
             ajustandoHerramientas = true;
             try
             {
-                int maximo = Math.Max(90, ClientSize.Height / 2 - encabezado.Height);
-                contenedorHerramientas.Height = Math.Min(Math.Max(70, tablaHerramientas.PreferredSize.Height), maximo);
+                contenedorHerramientas.Width = 326;
+                AjustarLienzo();
             }
             finally { ajustandoHerramientas = false; }
         }
@@ -75,7 +76,7 @@ namespace GeoLab2D
 
         private void parametrosAnalisis_Cambiados(object sender, EventArgs e)
         {
-            if (selectorFigura.SelectedIndex == 4) ActualizarFigura();
+            if (selectorFigura.SelectedIndex == 4 || (mostrarAnalisis.Checked && selectorFigura.SelectedIndex <= 2)) ActualizarFigura();
         }
 
         private void parametrosTransformacion_Cambiados(object sender, EventArgs e)
@@ -110,12 +111,20 @@ namespace GeoLab2D
             bool esAnalisis = selectorFigura.SelectedIndex == 4;
             bool esEstrella = selectorFigura.SelectedIndex == 2 || (esAnalisis && panelAnalisis.Figura == 2);
             bool esVectores = selectorFigura.SelectedIndex == 3;
+            bool superponer = selectorFigura.SelectedIndex <= 2 && mostrarAnalisis.Checked;
             panelVectores.Visible = esVectores;
-            panelAnalisis.Visible = esAnalisis;
+            panelAnalisis.Visible = esAnalisis || superponer;
+            mostrarAnalisis.Enabled = selectorFigura.SelectedIndex <= 2;
+            panelAnalisis.PermitirSeleccion(esAnalisis);
+            if (superponer) panelAnalisis.SeleccionarFigura(selectorFigura.SelectedIndex);
             panelTransformaciones.Visible = !esVectores;
             panelColores.Visible = selectorFigura.SelectedIndex <= 2;
             if (selectorFigura.SelectedIndex <= 2) panelColores.SeleccionarFigura(selectorFigura.SelectedIndex);
             lienzo.Paleta = panelColores.Paleta;
+            seccionColores.Mostrar(selectorFigura.SelectedIndex <= 2);
+            seccionTransformacion.Mostrar(!esVectores);
+            seccionVectores.Mostrar(esVectores);
+            seccionAnalisis.Mostrar(esAnalisis || superponer);
             lado.Enabled = !esVectores;
             etiquetaLado.Enabled = !esVectores;
             puntas.Enabled = esEstrella;
@@ -200,6 +209,12 @@ namespace GeoLab2D
                 lienzo.MostrarVectores(panelVectores.VectorA, panelVectores.VectorB);
                 estado.Text = "Vectores desde O(0, 0) | Eje X hacia la derecha, Y hacia arriba\r\nEdite A.x, A.y, B.x y B.y para comprobar las operaciones";
             }
+            if (superponer)
+            {
+                panelAnalisis.MostrarResultados(contornosActuales, esEstrella);
+                lienzo.SuperponerAnalisis(panelAnalisis.A, panelAnalisis.B, panelAnalisis.P);
+            }
+            resumenFigura.Text = estado.Text.Split(new[] { "\r\n" }, StringSplitOptions.None)[0].Replace(" | ", "\r\n");
             AjustarHerramientas();
         }
 
